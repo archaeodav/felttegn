@@ -714,7 +714,7 @@ class Digi():
                 gt=QgsWkbTypes.Polygon
                 gt = "Polygon"
                     
-            #this is fucking retarded
+            #get crs string
             gt = "%s?crs=%s" % (gt,srs.authid())  
                 
             tmp_layer = QgsVectorLayer(gt, "temp_layer", "memory") 
