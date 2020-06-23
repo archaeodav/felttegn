@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/felt_tegn" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
