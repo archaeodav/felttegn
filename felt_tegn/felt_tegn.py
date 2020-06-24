@@ -317,6 +317,7 @@ class LoadData():
              
             self.codes={"-ANLG":{"lcode":"A","layer":"Anlæg","type":"poly","pass":2},
                         "-ZZANLG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":2},
+                        "-ZZANLAEG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":2},
                         "-FYLDSKIFTE":{"lcode":None,"layer":"Anlæg","type":"poly","pass":1},
                         "-PROFIL":{"lcode":None,"layer":"Anlæg","type":"poly","pass":2},
                         "-VAND":{"lcode":None,"layer":"Anlæg","type":"poly","pass":2},
@@ -327,7 +328,7 @@ class LoadData():
                         "-SNIT":{"lcode":None,"layer":"Snit","type":"pline","pass":2},
                         "-MAALEPKT":{"lcode":"M","layer":"Målepunkter","type":"point","pass":2},
                         "-PROEVE":{"lcode":"P","layer":"Prøver","type":"point","pass":2},
-                        "-FUND":{"lcode":"X","layer":"Prøver","type":"point","pass":2},
+                        "-FUND":{"lcode":"X","layer":"Fund","type":"point","pass":2},
                         "-KOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2},
                         "-BUNDKOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2},
                         "-LAG":{"lcode":"L","layer":"Lag","type":"poly","pass":2},
@@ -424,15 +425,59 @@ class LoadData():
             
             #if line starts with a dash it's a standard code...
             if r[4][0] == '-':
-                #if this as an ID number split and assign code and id
-                if ' ' in r[4]:
-                    kote, fid = r[4].split(' ')
-                    #ditto for attribute
-                    if '.' in fid:
-                        attr = kote.split('.')[-1]
+                
+                #check for first delimiter cos people do different things 
+                space = r[4].find(' ')
+                
+                dot = r[4].find('.')
+                
+                delim = None
+                
+                
+                # find out how it's delimited
+                if dot == -1 and space == -1:
+                     kote = r[4]
+                     
+                elif dot == -1 and space > 0:
+                    delim = space
+                    
+                elif dot > 0 and space ==-1:
+                    delim = dot
+                    
+                elif dot>0 and space>0:
+                    
+                    if dot < space:
+                        delim = dot
+                        
+                    else:
+                        delim = space
+                
+                # slice accordingly        
+                if not delim is None:
+                    if not delim == len(r)-1:
+                        kote = r[4][:delim]
+                        fid = r[4][delim+1:]
+                    else:
+                        kote = r[4]
                 else:
                     kote = r[4]
+                    '''fall-back condition is just to take these into the code
+                    if it's wrong it will get picked up by error handling when we
+                    get the code'''
 
+                if not fid is None:
+                    '''split off attributes from id'''    
+                    if '.' in fid:
+                        fid_l = fid.split('.')
+                        
+                        fid = fid_l[0]
+                        
+                        if len(fid_l)>2:
+                            attr = ' '.join(fid_l[1:])
+                        
+                        else:
+                            attr = fid_l[-1]
+                
                     
             # else the code is probably denoted by the fist letter            
             else:
@@ -714,7 +759,7 @@ class Digi():
                 gt=QgsWkbTypes.Polygon
                 gt = "Polygon"
                     
-            #get crs string
+            #this is fucking retarded
             gt = "%s?crs=%s" % (gt,srs.authid())  
                 
             tmp_layer = QgsVectorLayer(gt, "temp_layer", "memory") 
