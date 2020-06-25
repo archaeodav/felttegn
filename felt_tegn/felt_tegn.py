@@ -213,7 +213,8 @@ class FeltTegn:
 
         ifile = self.dlg.inputTextFile
             
-        ifile.setStorageMode(QgsFileWidget.GetFile)
+        ifile.setStorageMode(QgsFileWidget.GetMultipleFiles)
+        
         
         #TODO constrain to txt / csv....
             
@@ -233,15 +234,14 @@ class FeltTegn:
        
         # See if OK was pressed
         if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-           
             shp = self.dlg.radioButton_shp.isChecked()
             tab = self.dlg.radioButton_tab.isChecked()
             gp = self.dlg.radioButton_gp.isChecked()
             gjson = self.dlg.radioButton_gjson.isChecked()
             
             add_files = self.dlg.chk_addfiles.isChecked()
+
+           
 
             print ('infile:', 
                    ifile.filePath(),
@@ -258,22 +258,28 @@ class FeltTegn:
             
             print (proj.crs().authid())
             
-            digit = Digi([ifile.filePath()])
+            ifile = ifile.splitFilePaths(ifile.filePath())
             
-            out_layers = digit.feat_export(odir.filePath(),
-                                           srs=proj.crs(),
-                                           shp=shp,
-                                           tab=tab,
-                                           gp=gp,
-                                           gjson=gjson)
+            print (ifile, type(ifile))
             
-            if add_files is True:
-                for l in out_layers:
-                    ol = QgsVectorLayer(l,os.path.split(l)[-1].split('.')[0],"ogr")
-                    QgsProject.instance().addMapLayer(ol)
-            else:
-                out_layers
-                        
+            for i in ifile:
+            
+                digit = Digi([i])
+                
+                out_layers = digit.feat_export(odir.filePath(),
+                                               srs=proj.crs(),
+                                               shp=shp,
+                                               tab=tab,
+                                               gp=gp,
+                                               gjson=gjson)
+                
+                if add_files is True:
+                    for l in out_layers:
+                        ol = QgsVectorLayer(l,os.path.split(l)[-1].split('.')[0],"ogr")
+                        QgsProject.instance().addMapLayer(ol)
+                else:
+                    out_layers
+                            
 class LoadData():
     """ Class to load data from a csv file"""
     def __init__(self,
@@ -383,6 +389,8 @@ class LoadData():
         """
         
         unique = True
+        
+        print (infile, type(infile))
         
         #open file and iterate over lines
         with open(infile, 'r') as i:
