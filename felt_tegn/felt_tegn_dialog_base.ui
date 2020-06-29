@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>477</width>
-    <height>366</height>
+    <width>503</width>
+    <height>420</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="button_box">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>320</y>
+     <x>150</x>
+     <y>390</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -167,6 +167,22 @@
    </property>
    <property name="text">
     <string>Add files to project?</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="chk_kote">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>300</y>
+     <width>131</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Make Kotefile with all points?</string>
    </property>
    <property name="checked">
     <bool>true</bool>
