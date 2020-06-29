@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtCore import QVariant
-
+from qgis import processing
 from qgis.gui import QgsFileWidget, QgsProjectionSelectionWidget
 
 # Initialize Qt resources from file resources.py
@@ -53,6 +53,8 @@ from qgis.core import (
   Qgis,
   QgsProject,
   QgsCoordinateReferenceSystem)
+
+
 
 class FeltTegn:
     """QGIS Plugin Implementation."""
@@ -239,9 +241,9 @@ class FeltTegn:
             gp = self.dlg.radioButton_gp.isChecked()
             gjson = self.dlg.radioButton_gjson.isChecked()
             
-            add_files = self.dlg.chk_addfiles.isChecked()
-
-           
+            add_files = self.dlg.chk_addfiles.isChecked() 
+            
+            kote_file = self.dlg.chk_kote.isChecked() 
 
             print ('infile:', 
                    ifile.filePath(),
@@ -264,7 +266,7 @@ class FeltTegn:
             
             for i in ifile:
             
-                digit = Digi([i])
+                digit = Digi([i],kote_file=kote_file)
                 
                 out_layers = digit.feat_export(odir.filePath(),
                                                srs=proj.crs(),
@@ -299,6 +301,8 @@ class LoadData():
         
         self.layers = {}
         
+        self.all_points = {}
+        
         self.errors =[]
               
         """Use default codes? if so set self.codes to use default ardigi codes.
@@ -312,6 +316,9 @@ class LoadData():
                     poly : polygon
                     zpoly : zigzag polygon
                     upoly : delete this from intersecting polgons
+                            layer from which to do this is denoted by U_******
+                    spoly : split poly using other polys. Target layer denoted
+                            by S_********
                     point : point
                     pline : polyline
              - pass : what stage in the iterator are these taken in?:
@@ -348,13 +355,9 @@ class LoadData():
                 if not self.codes[k]["lcode"] is None:
                     # if they do add the code info under the alias
                     lcodes[self.codes[k]["lcode"]]=self.codes[k]
-                    
-                   
+                  
             for d in (lcodes):
                 self.codes.update(lcodes)
-                
-                    
-            
 
         else:
             ''' load code definitons from a json file. this is extra functionality 
@@ -368,10 +371,7 @@ class LoadData():
                 by snapping to vertices of poly and extracting pline between
                 vertices'''
             
-            pass
-            
-    
-        
+            pass     
     
     def parsefile(self,
                   infile, # path to source file inluding path #TODO from GUI
@@ -383,15 +383,10 @@ class LoadData():
                   kidx=4, # index for arkdigi code
                   nidx=5, # index for notes field
                   proj = None, # TODO handle projections from GUI
-                  ):
+                  kote_file = False):
         """
         method loads and parses file
         """
-        
-        unique = True
-        
-        print (infile, type(infile))
-        
         #open file and iterate over lines
         with open(infile, 'r') as i:
             
@@ -414,49 +409,37 @@ class LoadData():
         current = []
         
         #loop over data
-        
         l = len(self.data)
         
         for r in self.data:
+            
             #set feature id
             fid = None
-            
-            #temp feature id
-            #tfid = None
-            
             #set point code
             kote = None
             #set attribute
             attr = None
             
-            unique = True
-            
+            idid =r[3]
+           
             #if line starts with a dash it's a standard code...
             if r[4][0] == '-':
-                
                 #check for first delimiter cos people do different things 
-                space = r[4].find(' ')
-                
+                space = r[4].find(' ') 
                 dot = r[4].find('.')
-                
                 delim = None
                 
                 
                 # find out how it's delimited
                 if dot == -1 and space == -1:
-                     kote = r[4]
-                     
+                     kote = r[4]     
                 elif dot == -1 and space > 0:
-                    delim = space
-                    
+                    delim = space  
                 elif dot > 0 and space ==-1:
-                    delim = dot
-                    
+                    delim = dot 
                 elif dot>0 and space>0:
-                    
                     if dot < space:
-                        delim = dot
-                        
+                        delim = dot   
                     else:
                         delim = space
                 
@@ -476,60 +459,45 @@ class LoadData():
                 if not fid is None:
                     '''split off attributes from id'''    
                     if '.' in fid:
-                        fid_l = fid.split('.')
-                        
+                        fid_l = fid.split('.') 
                         fid = fid_l[0]
-                        
+    
                         if len(fid_l)>2:
                             attr = ' '.join(fid_l[1:])
-                        
                         else:
-                            attr = fid_l[-1]
-                
+                            attr = fid_l[-1]         
                     
             # else the code is probably denoted by the fist letter            
             else:
                 kote =r[4][0]
-                
                 #assign attribute if it's htere
                 if '.' in r[4]:
                     fid, attr = r[4].split('.')
                 
                 # if it's not the feature id is the feature id
                 else:
-                    fid = r[4]
-            
+                    fid = r[4]          
             
             if fid is None:
-                
-                unique = False
-                
                 if len(current)==0:
                     #tfid = "%s_%s" %(kote,r[3])
                     tfid = "%s" %(r[3])
                 fid = tfid
-              
-              
+                   
             # check if code is in our code list
             if kote.upper() in self.codes.keys():
                 #if so retrieve code from code list
-                code = self.codes[kote.upper()]
-                
+                code = self.codes[kote.upper()]  
                 # get the appropriate layer from the code list
                 layer = code["layer"]
-                                               
                 # if it's not in our list of layers create it pronto- we'll need it later
                 if not layer in self.layers.keys():
-                    self.layers[layer]={'type':code["type"]}
-                    
+                    self.layers[layer]={'type':code["type"]}    
                 # append the current geometry to current feature
                 current.append([float(r[0]),float(r[1]),float(r[2]),r[3]])
                 
-                
-                
                 # check this feature against the next in the list
                 # if it's different we're done with this feature
-               
                 last_pt = False
                                     
                 if not i==l-1:
@@ -541,10 +509,8 @@ class LoadData():
                 if last_pt is True:                    
                     # ... unless it's a first pass feature
                     if code["pass"] == 1:
-                        # I don't trust the feature ids from these to be unique
-                        
+                        # I don't trust the feature ids from these to be unique 
                         feat_id = "%s_%s" %(kote, fid)
-                        #feat_id = "%s" %(kote)
                         # check to see if this is a new feature or a contiuation
                         if not feat_id in self.feats_1st_pass.keys():
                             #if it's new make it
@@ -560,14 +526,10 @@ class LoadData():
                     else:
                         # if this is a second pass feature create it
                         # check first to see if it has a unique id- stones etc don't
-                        #print ("2 PASS")
-                        #print (fid,current,code)
                         if not fid in self.feats_2nd_pass.keys():
                            
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
-                        
-                        #elif unique is False:
                         else:
                             print ("*UNIQUEunique")
                             #if it disnae make an id from the point ids
@@ -587,15 +549,26 @@ class LoadData():
             # if we can't find the code append to errors
             # TODO- handle this much betterer- add an error collection method
             else:
-                #print('ERROR',r)
                 self.errors.append(r)
-                
-            
-            
+                           
             # increment the counter cos we done here
             i =i+1
+            
+            if kote_file is True:
+                self.all_points[idid]={"points":[[float(r[0]),float(r[1]),float(r[2]),r[3]]],
+                                       "x":float(r[0]),
+                                       "y":float(r[1]),
+                                       "z":float(r[2]),
+                                       "punkt_id":r[3],
+                                       "Fid":fid,
+                                       "kote":kote,
+                                       "attr":attr,
+                                       "code":{"type":'point',"layer":'AllePunkter'}}
+              
+                if not 'AllePunkter' in self.layers:
+                    self.layers['AllePunkter']={'type':'point'}            
+   
         print ("Errors", self.errors)
-        #print (self.feats_2nd_pass)
             
 class Digi():
     """ 
@@ -606,8 +579,8 @@ class Digi():
     def __init__(self, 
                  infiles, #list of csv files to load
                  split_files=True, #convert as seperate files or homogenise
-                 case_delimiter = '_' # delimiter used in case- eg FHM12345_blah.csv
-                 ):
+                 case_delimiter = '_', # delimiter used in case- eg FHM12345_blah.csv
+                 kote_file = False):
         
         # The layers we'll actually use
         self.layers = None
@@ -622,16 +595,13 @@ class Digi():
         if split_files is True:
             for f in infiles:
                 indata = LoadData()
-                indata.parsefile(f)
+                indata.parsefile(f, kote_file=kote_file)
                 
                 self.layers = indata.layers
                 
-                
-                for d in (indata.feats_1st_pass,indata.feats_2nd_pass): 
+                for d in (indata.feats_1st_pass,indata.feats_2nd_pass,indata.all_points): 
                     self.features.update(d) 
-                    
-                    
-                    
+                        
                 if len(os.path.split(f)[-1])>2:
                     self.fname = '_'.join(os.path.split(f)[-1].split('.')[0:-1])
                 
@@ -641,38 +611,23 @@ class Digi():
                 self.fname = self.fname.replace(' ', '_')
                 
                 self.feature_builder()
-                
-            
-        # TODO make this work- same as above but user must supply filename?
-        else:
-            indata = LoadData()
-            for f in infiles:
-                indata.parsefile(f)
-                
-            self.layers = indata.layers
-            for d in (indata.feats_1st_pass,indata.feats_2nd_pass): 
-                self.features.update(d) 
-                
-        
-                
-        
+                 
     def feature_builder(self):
-
+        
+        mod_feats = False
+        
         for feat in self.features:
- 
+            
             f = self.features[feat]
             
             pts = []
             
             for pt in f["points"]:
-                
                 pts.append(QgsPointXY(pt[0],pt[1])) 
             
             tp = f["code"]["type"]
             
             l = f["code"]["layer"]
-            
-            attr = f["attr"]
             
             geom = None
             
@@ -695,16 +650,63 @@ class Digi():
                 geom = self.point2pline(pts)
                 
             elif tp == "upoly":
-                geom = self.upoly(pts)
-                #TODO not implemented!
-                
+                geom = self.point2poly(pts)
+                mod_feats = True
+            
+            elif tp == "spoly":
+                geom = self.point2poly(pts)
+                mod_feats = True
+                      
             if not l in self.layers:
                 self.layers[l]={}
                 
+            attr = f["attr"]
             
-            self.layers[l][feat]={"geom":geom,"attr":attr}
+            if not l == 'AllePunkter':
+                self.layers[l][feat]={"geom":geom,"attr":attr}
+                
+            else:
+                self.layers[l][feat]={"geom":geom,
+                                      "x":f['x'],
+                                      "y":f['y'],
+                                      "z":f['z'],
+                                      "punkt_id":f['punkt_id'],
+                                      "Kote":f["kote"],
+                                      "Fid":f['Fid'],
+                                      "attr":attr}
+        if mod_feats is True:
+            self.mod_features()       
+            
+    def mod_features(self):
+        for l in self.layers:
+            if self.layers[l]['type']=='upoly' or self.layers[l]['type']=='spoly':
+                
+                target_key = l.split('_')[-1]
+                
+                target = self.layers[target_key]
+                
+                source = self.layers[l]
+                
+                for feat1 in target:
+                    
+                    if not type(target[feat1]) is str:
+                        f1_geom = target[feat1]['geom']
+                        
+                        
+                        for feat2 in source:
+                            
+                            if not type(source[feat2]) is str:
+                                f2_geom = source[feat2]['geom']
                                 
-                  
+                                if f1_geom.intersects(f2_geom):
+                                    if self.layers[l]['type']=='upoly':
+                                        f1_geom = f1_geom.difference(f2_geom)
+                                        
+                                    elif self.layers[l]['type']=='spoly':
+                                        pass
+                                    
+                        self.layers[target_key][feat1]['geom']=f1_geom
+                                           
     def feat_export(self, 
                     odir, 
                     srs, 
@@ -741,8 +743,8 @@ class Digi():
     
         else:
             pass
-
-              
+        
+       
         for l in self.layers:
                        
             name = "%s_%s" %(self.fname,l)
@@ -751,9 +753,26 @@ class Digi():
             
                         
             fields = QgsFields()
-            fields.append(QgsField("Nr", QVariant.String))
-            fields.append(QgsField("Notes", QVariant.String))
             
+            all_points = False
+            
+            if l == "AllePunkter":
+                all_points = True
+                    
+            if all_points is False:
+                fields.append(QgsField("Nr", QVariant.String))
+                fields.append(QgsField("Notes", QVariant.String))
+                
+            elif all_points is True:
+                fields.append(QgsField("X", QVariant.Double))
+                fields.append(QgsField("Y", QVariant.Double))
+                fields.append(QgsField("Z", QVariant.Double))
+                fields.append(QgsField("PtID", QVariant.String))
+                fields.append(QgsField("Kote", QVariant.String))
+                fields.append(QgsField("FeatID", QVariant.String))
+                fields.append(QgsField("Attr", QVariant.String))
+                
+                
             if self.layers[l]['type']=='point':
                 gt=QgsWkbTypes.Point
                 gt = "Point"
@@ -767,10 +786,10 @@ class Digi():
                 gt=QgsWkbTypes.Polygon
                 gt = "Polygon"
                     
-            #this is fucking retarded
+            #this is silly
             gt = "%s?crs=%s" % (gt,srs.authid())  
                 
-            tmp_layer = QgsVectorLayer(gt, "temp_layer", "memory") 
+            tmp_layer = QgsVectorLayer(gt, l, "memory") 
             
                         
             pr = tmp_layer.dataProvider()
@@ -782,10 +801,17 @@ class Digi():
                 #print (feat)
                 if feat != 'type' and feat !='attr':
                     fet = QgsFeature()
-                    #print(self.layers[l][feat]["geom"],type(self.layers[l][feat]["geom"]))
                     fet.setGeometry(self.layers[l][feat]["geom"])
-                    fet.setAttributes([feat, self.layers[l][feat]["attr"]])
-                    #print (fet.geometry(),fet.attributes())
+                    if all_points is False:
+                        fet.setAttributes([feat, self.layers[l][feat]["attr"]])
+                    else:
+                        fet.setAttributes([self.layers[l][feat]["x"],
+                                           self.layers[l][feat]["y"],
+                                           self.layers[l][feat]["z"],
+                                           self.layers[l][feat]["punkt_id"],
+                                           self.layers[l][feat]["Kote"],
+                                           self.layers[l][feat]["Fid"],
+                                           self.layers[l][feat]["attr"]])
                     pr.addFeatures([fet])
                     tmp_layer.updateExtents()
 
@@ -821,32 +847,23 @@ class Digi():
             
             o_list.append(ofname)
             
-        return o_list
-       
+        return o_list       
         
     #******************** GENERIC METHODS *************************************
     
     def point2poly(self,points):
         """ internal method to take geometry and spit out a polygon """
-        
-        #print ('PTS', type(points), points)
-    
-
         ring = QgsGeometry.fromPolygonXY([points])     
         
-        #print ('RING', ring)
-            
         return ring
     
     def point2pline(self,points):
         """ internal method to take geometry and spit out a polyline """
-        
         ln = QgsGeometry.fromPolylineXY(points)
         
         return ln
     
     def point2point(self,point):
-       
         p1 = QgsGeometry.fromPointXY(point[0])
         
         return p1
@@ -860,11 +877,10 @@ class Digi():
     
     def upoly(self,feature_list):
         """ 
-        method to cut out bits of polys
+        method to cut out bits of polys- 
         """
         blah = 'blah'
         return blah
-    
     
     def zzpoly(self,points):
         """
@@ -908,4 +924,3 @@ class Digi():
         poly = c.buffer(d,25)
         
         return poly
- 
