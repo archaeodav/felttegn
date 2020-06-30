@@ -10,3 +10,8 @@ Download the included zip file and in the top menu choose *'plugins>manage and i
 
 ## Reporting problems
 Please either report issues on GitHub or by email
+
+## Known issues:
+ - Tabfile output is blocky as we need to set the extents properly.
+ - Features not assigned unique attributes in the csv will have random garbage inserted instead
+ 
