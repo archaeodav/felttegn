@@ -25,7 +25,6 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtCore import QVariant
-from qgis import processing
 from qgis.gui import QgsFileWidget, QgsProjectionSelectionWidget
 
 # Initialize Qt resources from file resources.py
@@ -36,6 +35,7 @@ import os.path
 
 import os
 import csv
+from operator import itemgetter
 
 from qgis.core import (
   QgsFields,
@@ -52,7 +52,11 @@ from qgis.core import (
   QgsVectorLayer,
   Qgis,
   QgsProject,
-  QgsCoordinateReferenceSystem)
+  QgsCoordinateReferenceSystem,
+  QgsWkbTypes,
+  QgsMarkerSymbol,
+  QgsLineSymbol,
+  QgsFillSymbol)
 
 
 
@@ -213,19 +217,15 @@ class FeltTegn:
             self.first_start = False
             self.dlg = FeltTegnDialog()
 
+        # Input file dialog
         ifile = self.dlg.inputTextFile
-            
+        # Enable multiple file ingest
         ifile.setStorageMode(QgsFileWidget.GetMultipleFiles)
-        
-        
-        #TODO constrain to txt / csv....
-            
+        #Set up output directory dialog
         odir = self.dlg.outputTargetDir
-            
         odir.setStorageMode(QgsFileWidget.GetDirectory)
-            
+        #Projection dialog
         proj = self.dlg.mQgsProjectionSelectionWidget
-        
         proj.setCrs(QgsCoordinateReferenceSystem("EPSG:25832"))
         
         # show the dialog
@@ -236,38 +236,24 @@ class FeltTegn:
        
         # See if OK was pressed
         if result:
+            # Export file format radio butoons
             shp = self.dlg.radioButton_shp.isChecked()
             tab = self.dlg.radioButton_tab.isChecked()
             gp = self.dlg.radioButton_gp.isChecked()
             gjson = self.dlg.radioButton_gjson.isChecked()
             
+            # File creation options
             add_files = self.dlg.chk_addfiles.isChecked() 
-            
             kote_file = self.dlg.chk_kote.isChecked() 
 
-            print ('infile:', 
-                   ifile.filePath(),
-                   'outfile:',
-                   odir.filePath(),
-                   'proj:',
-                   proj.crs().authid(),
-                   shp,
-                   tab,
-                   gp,
-                   gjson)
-            
-            print (type(proj.crs().authid()))
-            
-            print (proj.crs().authid())
-            
+            # Input files
             ifile = ifile.splitFilePaths(ifile.filePath())
             
-            print (ifile, type(ifile))
-            
             for i in ifile:
-            
+                # Instantiate Digi class
                 digit = Digi([i],kote_file=kote_file)
                 
+                # Export the features
                 out_layers = digit.feat_export(odir.filePath(),
                                                srs=proj.crs(),
                                                shp=shp,
@@ -275,10 +261,42 @@ class FeltTegn:
                                                gp=gp,
                                                gjson=gjson)
                 
+                # Add files to Qgis layers
                 if add_files is True:
-                    for l in out_layers:
-                        ol = QgsVectorLayer(l,os.path.split(l)[-1].split('.')[0],"ogr")
+                    #Instatiate our artist class
+                    styled = Artist()
+                    
+                    #sort these and get symbology
+                    for l in styled.order_layers(out_layers):
+                        #get layer name
+                        ol = QgsVectorLayer(l[0],os.path.split(l[0])[-1].split('.')[0],"ogr")
+                        
+                        #Add layer to map
                         QgsProject.instance().addMapLayer(ol)
+                        
+                        #Append properties to renderer
+                        props = ol.renderer().symbol().symbolLayer(0).properties()
+                        
+                        for key in l[3]:
+                            props[key] = l[3][key]
+                        
+                        #Set symbol type & properties depending on geometry
+                        geom_type = QgsWkbTypes.displayString(ol.wkbType())
+                        
+                        if geom_type == 'Polygon' or geom_type == 'MultiPolygon':
+                            ol.renderer().setSymbol(QgsFillSymbol.createSimple(props))
+                        elif geom_type == 'LineString' or geom_type == 'MultiLineString':
+                            ol.renderer().setSymbol(QgsLineSymbol.createSimple(props))
+                        elif geom_type == 'Point' or geom_type == 'MultiPoint':
+                            ol.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
+                        else:
+                            pass
+                        #redraw layer
+                        ol.triggerRepaint()
+                        #refresh legend
+                        node = QgsProject.instance().layerTreeRoot().findLayer(ol.id())
+                        self.iface.layerTreeView().layerTreeModel().refreshLayerLegend(node)
+                        
                 else:
                     out_layers
                             
@@ -291,18 +309,13 @@ class LoadData():
         
         """List to contain data values"""
         self.data=[]
-        
         """Codes for feature types"""
         self.codes = {}
-               
-        self.feats_1st_pass = {}
-        
+        # Dicts to contain first and secon pass features, layers and all points
+        self.feats_1st_pass = {}  
         self.feats_2nd_pass = {}
-        
-        self.layers = {}
-        
+        self.layers = {}   
         self.all_points = {}
-        
         self.errors =[]
               
         """Use default codes? if so set self.codes to use default ardigi codes.
@@ -327,12 +340,11 @@ class LoadData():
                  2nd pass- all the normal stuff"""
                     
         if default_codes is True:
-             
             self.codes={"-ANLG":{"lcode":"A","layer":"Anlæg","type":"poly","pass":2},
                         "-ZZANLG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":2},
                         "-ZZANLAEG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":2},
                         "-FYLDSKIFTE":{"lcode":None,"layer":"Anlæg","type":"poly","pass":1},
-                        "-PROFIL":{"lcode":None,"layer":"Anlæg","type":"poly","pass":2},
+                        "-PROFIL":{"lcode":None,"layer":"Profil","type":"poly","pass":2},
                         "-VAND":{"lcode":None,"layer":"Anlæg","type":"poly","pass":2},
                         "-FELT1":{"lcode":"F","layer":"Felt","type":"zpoly","pass":1},
                         "-FELT2":{"lcode":None,"layer":"Felt","type":"poly","pass":2},
@@ -349,9 +361,7 @@ class LoadData():
             
             # loop through codes to check if they have aliases
             lcodes = {}
-            
             for k in self.codes.keys():
-                #print (k)
                 if not self.codes[k]["lcode"] is None:
                     # if they do add the code info under the alias
                     lcodes[self.codes[k]["lcode"]]=self.codes[k]
@@ -363,14 +373,6 @@ class LoadData():
             ''' load code definitons from a json file. this is extra functionality 
             to be added in a bit '''
             #TODO load codefile
-            
-            #TODO
-            '''  idea note:
-                use 3rd pass to do stones wood and other materials in anlæg by 
-                cutting them out of anlæg polys. Also, do edge types and such
-                by snapping to vertices of poly and extracting pline between
-                vertices'''
-            
             pass     
     
     def parsefile(self,
@@ -389,7 +391,6 @@ class LoadData():
         """
         #open file and iterate over lines
         with open(infile, 'r') as i:
-            
             r = csv.reader(i,delimiter=delimiter)
             # restructure if needed based on args
             for row in r:
@@ -403,23 +404,19 @@ class LoadData():
                     #append to self.data
                     self.data.append([x,y,z,idid,k])
         # set counter
-        i = 0
-        
+        i = 0  
         # set up list to hold points related to feature
         current = []
-        
         #loop over data
         l = len(self.data)
-        
         for r in self.data:
-            
             #set feature id
             fid = None
             #set point code
             kote = None
             #set attribute
             attr = None
-            
+            # set id for all points
             idid =r[3]
            
             #if line starts with a dash it's a standard code...
@@ -428,8 +425,6 @@ class LoadData():
                 space = r[4].find(' ') 
                 dot = r[4].find('.')
                 delim = None
-                
-                
                 # find out how it's delimited
                 if dot == -1 and space == -1:
                      kote = r[4]     
@@ -442,7 +437,6 @@ class LoadData():
                         delim = dot   
                     else:
                         delim = space
-                
                 # slice accordingly        
                 if not delim is None:
                     if not delim == len(r)-1:
@@ -465,23 +459,21 @@ class LoadData():
                         if len(fid_l)>2:
                             attr = ' '.join(fid_l[1:])
                         else:
-                            attr = fid_l[-1]         
-                    
+                            attr = fid_l[-1]                  
             # else the code is probably denoted by the fist letter            
             else:
                 kote =r[4][0]
                 #assign attribute if it's htere
                 if '.' in r[4]:
                     fid, attr = r[4].split('.')
-                
                 # if it's not the feature id is the feature id
                 else:
                     fid = r[4]          
-            
+            # Assign feature ID if none exists
             if fid is None:
                 if len(current)==0:
-                    #tfid = "%s_%s" %(kote,r[3])
-                    tfid = "%s" %(r[3])
+                    tfid = "%s_%s" %(kote,r[3])
+                    #tfid = "%s" %(r[3])
                 fid = tfid
                    
             # check if code is in our code list
@@ -496,10 +488,11 @@ class LoadData():
                 # append the current geometry to current feature
                 current.append([float(r[0]),float(r[1]),float(r[2]),r[3]])
                 
-                # check this feature against the next in the list
-                # if it's different we're done with this feature
+                '''check this feature against the next in the list and to see
+                if it's different or the last point in file. If so we're we're
+                done with this feature and we can assign output to the 1st or 2nd
+                pass feature dicts'''
                 last_pt = False
-                                    
                 if not i==l-1:
                     if self.data[i+1][4] != r[4]:
                         last_pt = True
@@ -531,12 +524,7 @@ class LoadData():
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
                         else:
-                            print ("*UNIQUEunique")
-                            #if it disnae make an id from the point ids
-                            print ('FID NOT UNIQUE', fid)
                             fid = "%s_%s" %(kote, current[0][3])
-                            
-                            print ('FID NOT UNIQUE', fid)
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
                         
@@ -587,21 +575,26 @@ class Digi():
         
         # an empty dict to hold the features
         self.features = {}
-        
+        # filename
         self.fname = None
         
+        #Errors
         self.errors=[]
         
+        ''' This if statment is kind of redundant, but left as a hook because 
+        eventually we may add the option to merge seperate files'''
         if split_files is True:
+            # Loop through and load files
             for f in infiles:
                 indata = LoadData()
                 indata.parsefile(f, kote_file=kote_file)
-                
                 self.layers = indata.layers
                 
+                # Merge dictionaries containing features
                 for d in (indata.feats_1st_pass,indata.feats_2nd_pass,indata.all_points): 
                     self.features.update(d) 
-                        
+                
+                # Generate filename template for output
                 if len(os.path.split(f)[-1])>2:
                     self.fname = '_'.join(os.path.split(f)[-1].split('.')[0:-1])
                 
@@ -610,27 +603,37 @@ class Digi():
                 
                 self.fname = self.fname.replace(' ', '_')
                 
+                # Call to feature builder method to construct geometries
                 self.feature_builder()
                  
     def feature_builder(self):
+        '''This method is used to construct geometries from points. Loops through
+        features, constructs geometries and finally modifies features is either upoly 
+        or spoly are found'''
         
+        # Flag for modify features
         mod_feats = False
         
+        # Loop through features
         for feat in self.features:
-            
+            #The current feature
             f = self.features[feat]
-            
+            #list to contain points
             pts = []
-            
+            # append points as QGIS geometries
             for pt in f["points"]:
                 pts.append(QgsPointXY(pt[0],pt[1])) 
             
+            # Get feature type
             tp = f["code"]["type"]
-            
+            # get layer feature goes into
             l = f["code"]["layer"]
             
+            # empty geometry
             geom = None
             
+            # Pass point arrays to constructor methods depending on geometry type
+            # deal with polygons
             if tp == "poly":
                 if len(pts)>2:
                     geom = self.point2poly(pts)
@@ -639,32 +642,33 @@ class Digi():
                 else:
                     #todo handle error nicely
                     pass
-            
+            # deal with zig-zag polys
             elif tp == "zpoly":
                 geom = self.zzpoly(pts)
-                
+            # deal with points
             elif tp == "point":
                 geom = self.point2point(pts)
-                  
+            # deal with poly lines
             elif tp == "pline":
                 geom = self.point2pline(pts)
-                
+            # deal with cutouts from polys
             elif tp == "upoly":
                 geom = self.point2poly(pts)
                 mod_feats = True
-            
+            #Deal with superimpostion
+            #Todo- implement method
             elif tp == "spoly":
                 geom = self.point2poly(pts)
                 mod_feats = True
-                      
+            # If this layer is not in layers add it          
             if not l in self.layers:
                 self.layers[l]={}
-                
-            attr = f["attr"]
-            
+            # Set attribute   
+            attr = f["attr"]  
+            # Output constructed features
             if not l == 'AllePunkter':
                 self.layers[l][feat]={"geom":geom,"attr":attr}
-                
+            # Output all points                
             else:
                 self.layers[l][feat]={"geom":geom,
                                       "x":f['x'],
@@ -674,37 +678,39 @@ class Digi():
                                       "Kote":f["kote"],
                                       "Fid":f['Fid'],
                                       "attr":attr}
+        # Modify features if tru
         if mod_feats is True:
             self.mod_features()       
             
     def mod_features(self):
+        # Method for modifiying features based on intersecting geometries
         for l in self.layers:
             if self.layers[l]['type']=='upoly' or self.layers[l]['type']=='spoly':
-                
+                # Get the target layer
                 target_key = l.split('_')[-1]
-                
                 target = self.layers[target_key]
-                
+                # Use this layer as the modifer
                 source = self.layers[l]
                 
+                # loop through features and perofm a pairwise comparison
                 for feat1 in target:
-                    
                     if not type(target[feat1]) is str:
                         f1_geom = target[feat1]['geom']
-                        
-                        
-                        for feat2 in source:
-                            
+                        for feat2 in source: 
                             if not type(source[feat2]) is str:
                                 f2_geom = source[feat2]['geom']
                                 
+                                # DO the two features intersect?
                                 if f1_geom.intersects(f2_geom):
+                                    #if so perform modification
                                     if self.layers[l]['type']=='upoly':
                                         f1_geom = f1_geom.difference(f2_geom)
                                         
                                     elif self.layers[l]['type']=='spoly':
+                                        #Todo implement spoly method
                                         pass
-                                    
+                        '''After we've checked all geometries add the modifed 
+                        geometry back to the original feature'''
                         self.layers[target_key][feat1]['geom']=f1_geom
                                            
     def feat_export(self, 
@@ -714,17 +720,22 @@ class Digi():
                     tab=False,
                     gp=False,
                     gjson=False):
-                
-        dr_n = None
+        ''' Method to export features to different file formats'''
         
+        # Driver name        
+        dr_n = None
+        # File extension
         dr_ext =None
         
+        # list of output files
         o_list = []
         
+        # Set driver based on checkboxes in dialog passed from FeltTegn.run()
+        # Shapefile
         if shp is True:
             dr_n = "ESRI Shapefile"
             dr_ext=".shp"
-        
+        #Tab file
         elif tab is True:
             #dr_n = "MITAB"
             '''Note- MITAB doesn't work as driver name, although according to
@@ -732,37 +743,40 @@ class Digi():
             I don't know either'''
             dr_n = "Mapinfo File"
             dr_ext=".tab"
-        
+        #Geopackage
         elif gp is True:
             dr_n = "GPKG"
             dr_ext=".gpkg"
-        
+        #GeoJSON
         elif gjson is True:
             dr_n = "GeoJSON"
             dr_ext=".geojson"
     
         else:
-            pass
+            raise Exception("No output format chosen")
         
-       
+        # Loop through layers
         for l in self.layers:
-                       
+            # Set filename
             name = "%s_%s" %(self.fname,l)
-            
+            #Set full output path
             ofname = os.path.join(odir,name+dr_ext)
-            
-                        
+            #Set up fields
             fields = QgsFields()
             
+            # We have to handle the All points layer differntly.
             all_points = False
             
+            #Todo- I don't like this being hardcoded. Change this
             if l == "AllePunkter":
                 all_points = True
-                    
+            
+            # If it's not all points...
             if all_points is False:
                 fields.append(QgsField("Nr", QVariant.String))
                 fields.append(QgsField("Notes", QVariant.String))
-                
+            
+            # If it is all points ...
             elif all_points is True:
                 fields.append(QgsField("X", QVariant.Double))
                 fields.append(QgsField("Y", QVariant.Double))
@@ -772,33 +786,30 @@ class Digi():
                 fields.append(QgsField("FeatID", QVariant.String))
                 fields.append(QgsField("Attr", QVariant.String))
                 
-                
+            # Set geometry type
             if self.layers[l]['type']=='point':
                 gt=QgsWkbTypes.Point
                 gt = "Point"
                 
-                        
             elif self.layers[l]['type']=='pline':
                 gt=QgsWkbTypes.LineString
                 gt = "LineString"
-                        
             elif self.layers[l]['type']== 'poly' or self.layers[l]['type']=='zpoly':
                 gt=QgsWkbTypes.Polygon
                 gt = "Polygon"
-                    
-            #this is silly
+            
+            '''Set coordiante system and geometry type as a string for the the 
+            memory layer constructor. This is silly, but it's how it works'''
             gt = "%s?crs=%s" % (gt,srs.authid())  
-                
+            
+            # Construct memory layer and add fields
             tmp_layer = QgsVectorLayer(gt, l, "memory") 
-            
-                        
             pr = tmp_layer.dataProvider()
-            
             pr.addAttributes(fields)
             tmp_layer.updateFields()
             
+            # Add features to memory layer
             for feat in self.layers[l].keys():
-                #print (feat)
                 if feat != 'type' and feat !='attr':
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
@@ -815,15 +826,25 @@ class Digi():
                     pr.addFeatures([fet])
                     tmp_layer.updateExtents()
 
-            
+            # Set transform context for output layer
             transform_context = QgsProject.instance().transformContext()
+            #Instantiate a fiel writer class with attributes
             save_options = QgsVectorFileWriter.SaveVectorOptions()
+            # Set driver
             save_options.driverName = dr_n
+            # Set encoding
             save_options.fileEncoding = "UTF-8"
+            # Allow overwrite
             save_options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
             
+            # Get Qgis Version
             q_version =int(Qgis.QGIS_VERSION.split('.')[1])
             
+            #Export layers
+            ''' Intention here is to use the QGIS version to set the behaviour 
+            depending on how the version of Qgis handles file output, as early
+            desting indicated incomaptiblity with version 3.10. However- seem to 
+            fine with 3.10.7.'''
             if q_version >= 12:
                 error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
                                                                    ofname,
@@ -832,25 +853,29 @@ class Digi():
                 
             else:
                 error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
-                                                                   ofname,
-                                                                   transform_context,
-                                                                   save_options)
+                                                                  ofname,
+                                                                  "UTF-8",
+                                                                  srs,                                                                transform_context,
+                                                                  dr_n)
                                                                   
                         
             if error[0] == QgsVectorFileWriter.NoError:
                 print("success!")
             else:
                 print(error)
-                
+             
+            # Tidy up cos we cant trust GC
             del error
             del tmp_layer
             
-            o_list.append(ofname)
+            # Append to list of output files
+            if not self.layers[l]['type']== 'upoly' or self.layers[l]['type']=='spoly':
+                o_list.append([ofname,l])
             
         return o_list       
         
     #******************** GENERIC METHODS *************************************
-    
+    ''' These are all the geometry constructors'''
     def point2poly(self,points):
         """ internal method to take geometry and spit out a polygon """
         ring = QgsGeometry.fromPolygonXY([points])     
@@ -867,21 +892,7 @@ class Digi():
         p1 = QgsGeometry.fromPointXY(point[0])
         
         return p1
-    
-    def splitpoly(self,feature_list):
-        """ 
-        method to cut out and split intersecting polygons
-        """
-        blah = 'blah'
-        return blah
-    
-    def upoly(self,feature_list):
-        """ 
-        method to cut out bits of polys- 
-        """
-        blah = 'blah'
-        return blah
-    
+ 
     def zzpoly(self,points):
         """
         method for digitising polygons on long linear features such as trial
@@ -891,36 +902,65 @@ class Digi():
         then reversing the order of the evens and rejoining the two lists forming 
         a ring.
         """
-               
         # extract the odd and even points from the list. 
         odds = points[0::2]
-        
-        evens = points[1::2]
-        
+        evens = points[1::2] 
+        # Reverse the order of the even points
         evens.reverse()
-        
+        #Join the lists
         pts = odds + evens
-        
+        # Create polygon
         poly = self.point2poly(pts)
-        
         return poly
         
     def twopointpoly(self,points):
         """
         method spits out a circle from two points on perimiter of feature. 
         """
-        
+        # Generate a line geometry from the two points
         ln = self.point2pline(points)
-        
-        #print (ln)
-        
+        # Find the radius of the circle as half the line length  
         d = ln.length()/2
-        
-        #c = ln.centroid().asPoint()
+        #Find the centroid of the line
         c = ln.centroid()
-        
-        #print (c, c.type(), "!TWO POINT!")
-        
+        # Buffer around the centroid using the calculated radius
         poly = c.buffer(d,25)
         
         return poly
+    
+class Artist():
+    ''' Draw me like one of your french girls jack'''
+    def __init__(self,
+                 layer_def=None):
+        
+        self.layer_def = layer_def
+        
+        if self.layer_def is None:
+            self.layer_def = {"Felt":{'do':0,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '243,235,219,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'dash dot', 'outline_width': '0.26', 'outline_width_unit': 'MM', 'style': 'solid'}},
+                              "Anlæg":{'do':1,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '158,158,158,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
+                              "Snit":{'do':3, "style":{'capstyle': 'square', 'customdash': '5;2', 'customdash_map_unit_scale': '3x:0,0,0,0,0,0', 'customdash_unit': 'MM', 'draw_inside_polygon': '0', 'joinstyle': 'bevel', 'line_color': '227,24,16,255', 'line_style': 'solid', 'line_width': '0.26', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'ring_filter': '0', 'use_custom_dash': '0', 'width_map_unit_scale': '3x:0,0,0,0,0,0'}},
+                              "Lag":{'do':2,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '133,104,69,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
+                              "Kote":{'do':3,"style":{'angle': '0', 'color': '0,0,0,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '255,255,255,255', 'outline_style': 'solid', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '2', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
+                              "Fund":{'do':3,"style":{'angle': '0', 'color': '251,154,153,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'cross2', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '0,0,0,255', 'outline_style': 'solid', 'outline_width': '0', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'area', 'size': '2', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
+                              "Prøver":{'do':3,"style":{'angle': '0', 'color': '84,176,74,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '61,128,53,255', 'outline_style': 'solid', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '4', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
+                              "Målepunkter":{'do':3,"style":{'angle': '0', 'color': '172,154,251,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'triangle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '0,0,0,255', 'outline_style': 'solid', 'outline_width': '0', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'area', 'size': '1.6', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
+                              "Niveau":{'do':3,"style":{'angle': '0', 'color': '255,255,255,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'triangle', 'offset': '0,-0.20000000000000001', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '0,0,0,255', 'outline_style': 'solid', 'outline_width': '0', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'area', 'size': '2.4', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
+                              "Vand":{'do':2,"style":{'angle': '135', 'color': '0,0,239,255', 'distance': '2', 'distance_map_unit_scale': '3x:0,0,0,0,0,0', 'distance_unit': 'MM', 'line_width': '0.26', 'line_width_map_unit_scale': '3x:0,0,0,0,0,0', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM'}},
+                              "Profil":{'do':3,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '133,104,69,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
+                              "Fyldskifte":{'do':2,"style":{'angle': '45', 'color': '108,59,0,255', 'distance': '2', 'distance_map_unit_scale': '3x:0,0,0,0,0,0', 'distance_unit': 'MM', 'line_width': '0.26', 'line_width_map_unit_scale': '3x:0,0,0,0,0,0', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM'}},
+                              "AllePunkter":{'do':2,"style":{'angle': '0', 'color': '65,65,65,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '255,255,255,255', 'outline_style': 'no', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '0.6', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}}}
+
+    def order_layers(self, out_layers):
+        draw_list = []
+        
+        for layer in out_layers:
+            l = layer[1]
+            o = layer[0]
+            draw_list.append((o,l,self.layer_def[l]["do"],self.layer_def[l]["style"]))
+            
+        draw_list.sort(key=itemgetter(2))
+            
+        return draw_list
+            
+        
+            
