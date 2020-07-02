@@ -5,15 +5,15 @@
 [general]
 name=FeltTegn
 qgisMinimumVersion=3.0
-description=Plugin makes polys from oints
-version=0.1
-author=Arkæologisk IT
+description=Processes archaeological survey data for Danish Museums
+version=0.22
+author=David Stott,Arkæologisk IT
 email=ds@moesgaardmuseum.dk
 
-about=Takes stuff from gps into MUD
+about=This plugin is intended to enable archaeological museums in Denmark to use Qgis to process survey data from excavations. It takes GNSS and total station data as coded text files and generates the appropriate geometries and attributes based on feature codes. It is intended to mirror the functionality of MapDigi for MapInfo, currently used by many of the museums.
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/archaeodav/felttegn/issues
+repository=https://github.com/archaeodav/felttegn
 # End of mandatory metadata
 
 # Recommended items:
@@ -23,13 +23,13 @@ hasProcessingProvider=no
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=python
+tags=python,archeology,survey
 
 homepage=http://homepage
 category=Plugins
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
@@ -40,7 +40,7 @@ deprecated=False
 # plugin_dependencies=
 
 Category of the plugin: Raster, Vector, Database or Web
-# category=
+# category=Vector
 
 # If the plugin can run on QGIS Server.
 server=False
