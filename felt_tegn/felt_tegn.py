@@ -242,8 +242,11 @@ class FeltTegn:
             gp = self.dlg.radioButton_gp.isChecked()
             gjson = self.dlg.radioButton_gjson.isChecked()
             
-            # File creation options
+            # File creation options...
+            #Add files to map
             add_files = self.dlg.chk_addfiles.isChecked() 
+            '''Generate output containing all points? This is optional and is
+            supporting legacy users- some will just want to load the csv'''
             kote_file = self.dlg.chk_kote.isChecked() 
 
             # Input files
@@ -678,7 +681,7 @@ class Digi():
                                       "Kote":f["kote"],
                                       "Fid":f['Fid'],
                                       "attr":attr}
-        # Modify features if tru
+        # Modify features if true
         if mod_feats is True:
             self.mod_features()       
             
@@ -852,11 +855,11 @@ class Digi():
                                                                    save_options)
                 
             else:
-                error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
-                                                                  ofname,
-                                                                  "UTF-8",
-                                                                  srs,                                                                transform_context,
-                                                                  dr_n)
+                error = QgsVectorFileWriter.writeAsVectorFormat(tmp_layer,
+                                                                ofname,
+                                                                "UTF-8",
+                                                                srs,                                                                transform_context,
+                                                                dr_n)
                                                                   
                         
             if error[0] == QgsVectorFileWriter.NoError:
@@ -929,7 +932,8 @@ class Digi():
         return poly
     
 class Artist():
-    ''' Draw me like one of your french girls jack'''
+    ''' Class orders layers and sets up symbology before we add them to the map canvas.'''
+    # Todo- set this up to read a local symbol file 
     def __init__(self,
                  layer_def=None):
         
