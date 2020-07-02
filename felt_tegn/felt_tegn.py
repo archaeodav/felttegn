@@ -847,7 +847,7 @@ class Digi():
             ''' Intention here is to use the QGIS version to set the behaviour 
             depending on how the version of Qgis handles file output, as early
             desting indicated incomaptiblity with version 3.10. However- seem to 
-            fine with 3.10.7.'''
+            fine with 3.10.3.'''
             if q_version >= 12:
                 error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
                                                                    ofname,
@@ -855,11 +855,10 @@ class Digi():
                                                                    save_options)
                 
             else:
-                error = QgsVectorFileWriter.writeAsVectorFormat(tmp_layer,
-                                                                ofname,
-                                                                "UTF-8",
-                                                                srs,                                                                transform_context,
-                                                                dr_n)
+                print ('OLD METHOD!')
+                error = QgsVectorFileWriter.writeAsVectorFormat(layer=tmp_layer,
+                                                                fileName=ofname,
+                                                                options=save_options)
                                                                   
                         
             if error[0] == QgsVectorFileWriter.NoError:
