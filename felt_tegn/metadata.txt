@@ -7,7 +7,7 @@ name=FeltTegn
 qgisMinimumVersion=3.0
 description=Processes archaeological survey data for Danish Museums
 version=0.22
-author=David Stott,Arkæologisk IT
+author=David Stott, Arkæologisk IT
 email=ds@moesgaardmuseum.dk
 
 about=This plugin is intended to enable archaeological museums in Denmark to use Qgis to process survey data from excavations. It takes GNSS and total station data as coded text files and generates the appropriate geometries and attributes based on feature codes. It is intended to mirror the functionality of MapDigi for MapInfo, currently used by many of the museums.
@@ -25,7 +25,7 @@ hasProcessingProvider=no
 # Tags are comma separated with spaces allowed
 tags=python,archeology,survey
 
-homepage=http://homepage
+homepage=https://github.com/archaeodav/felttegn
 category=Plugins
 icon=icon.png
 # experimental flag
