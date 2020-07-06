@@ -840,6 +840,24 @@ class Digi():
             # Allow overwrite
             save_options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
             
+            if tab is True:
+                '''Need to set bounds for MapInfo files. Buffers by 500m to 
+                avoid any potential rounding errors or issues with modifiying
+                the layers later'''
+                ext=tmp_layer.extent()
+                '''
+                xmax = int(ext.xMaximum()+500)
+                ymax = int(ext.yMaximum()+500)
+                xmin = int(ext.xMinimum()+500)
+                ymin = int(ext.yMinimum()+500)
+                '''
+                xmax = ext.xMaximum()
+                ymax = ext.yMaximum()
+                xmin = ext.xMinimum()
+                ymin = ext.yMinimum()
+                
+                save_options.layerOptions = ['BOUNDS=%s,%s,%s,%s' %(xmin,ymin,xmax,ymax)]
+            
             # Get Qgis Version
             q_version =int(Qgis.QGIS_VERSION.split('.')[1])
             
