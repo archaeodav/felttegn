@@ -13,8 +13,9 @@ This is will only be updated afeter testing of significant updates- to get the m
 Please either report issues on GitHub or by email
 
 ## Compatability 
-We're testing on Qgis 3.10 and later
+We're testing on Qgis 3.10 and later. It works on earlier versions, but htere are some errors / unexpected behaviours
 
 ## Known issues:
- - Features not assigned unique attributes in the csv will have random garbage inserted instead
+ - Features not assigned unique attributes in the csv will have random garbage inserted instead. This goes for double numbering too.
+ - Error reporting is a work in progress. Currently no 'Fejl' layer is produced.
  
