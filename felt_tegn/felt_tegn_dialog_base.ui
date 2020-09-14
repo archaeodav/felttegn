@@ -49,7 +49,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Input file</string>
+    <string>Input-fil</string>
    </property>
   </widget>
   <widget class="QgsProjectionSelectionWidget" name="mQgsProjectionSelectionWidget">
@@ -72,7 +72,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Input CRS</string>
+    <string>Koordinatsystem</string>
    </property>
   </widget>
   <widget class="QgsFileWidget" name="outputTargetDir">
@@ -95,7 +95,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Output directory</string>
+    <string>Destinationsmappe</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="radioButton_shp">
@@ -108,7 +108,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Export ESRI shapefile</string>
+    <string>Eksportér ESRI .shp</string>
    </property>
    <property name="checked">
     <bool>true</bool>
@@ -127,7 +127,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Export MapInfo TAB</string>
+    <string>Eksportér MapInfo .tab</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="radioButton_gp">
@@ -140,7 +140,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Export GeoPackage</string>
+    <string>Eksportér GeoPackage</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="radioButton_gjson">
@@ -153,7 +153,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Export GeoJSON</string>
+    <string>Eksportér GeoJSON</string>
    </property>
   </widget>
   <widget class="QCheckBox" name="chk_addfiles">
@@ -166,7 +166,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Add files to project?</string>
+    <string>Tilføj til nuværende projekt?</string>
    </property>
    <property name="checked">
     <bool>true</bool>
@@ -182,7 +182,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Make Kotefile with all points?</string>
+    <string>Opret kotefil med alle punkter?</string>
    </property>
    <property name="checked">
     <bool>true</bool>

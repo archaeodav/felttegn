@@ -191,7 +191,7 @@ class FeltTegn:
         icon_path = ':/plugins/felt_tegn/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'take gps points make polys'),
+            text=self.tr(u'Digitalisér GPS-punkter'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
