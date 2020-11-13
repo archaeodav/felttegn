@@ -504,6 +504,7 @@ class LoadData():
                     
                 if last_pt is True:                    
                     # ... unless it's a first pass feature
+                    #TODO -add a 'label' attribute to the dicts
                     if code["pass"] == 1:
                         # I don't trust the feature ids from these to be unique 
                         feat_id = "%s_%s" %(kote, fid)
@@ -513,6 +514,7 @@ class LoadData():
                             self.feats_1st_pass[feat_id]={}
                             self.feats_1st_pass[feat_id]["code"]=code
                             self.feats_1st_pass[feat_id]["points"]=current
+                            self.feats_1st_pass[feat_id]["label"]=fid
                         else:
                             #if it's not new add the points to the existing feature
                             for c in current:
@@ -526,11 +528,14 @@ class LoadData():
                            
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
+                            self.feats_2nd_pass[fid]["label"]=fid
                         else:
+                            lbl = fid
                             fid = "%s_%s" %(kote, current[0][3])
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
-                        
+                            self.feats_2nd_pass[fid]["label"]=lbl
+                            
                         # add code info and attributes    
                         self.feats_2nd_pass[fid]["code"]=code
                         self.feats_2nd_pass[fid]["attr"]=attr
@@ -668,9 +673,10 @@ class Digi():
                 self.layers[l]={}
             # Set attribute   
             attr = f["attr"]  
+            label = f["label"]
             # Output constructed features
             if not l == 'AllePunkter':
-                self.layers[l][feat]={"geom":geom,"attr":attr}
+                self.layers[l][feat]={"geom":geom,"attr":attr,"label":label}
             # Output all points                
             else:
                 self.layers[l][feat]={"geom":geom,
@@ -817,7 +823,7 @@ class Digi():
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
                     if all_points is False:
-                        fet.setAttributes([feat, self.layers[l][feat]["attr"]])
+                        fet.setAttributes([feat["label"], self.layers[l][feat]["attr"]])
                     else:
                         fet.setAttributes([self.layers[l][feat]["x"],
                                            self.layers[l][feat]["y"],
