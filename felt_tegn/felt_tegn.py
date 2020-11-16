@@ -559,7 +559,8 @@ class LoadData():
                                        "Fid":fid,
                                        "kote":kote,
                                        "attr":attr,
-                                       "code":{"type":'point',"layer":'AllePunkter'}}
+                                       "code":{"type":'point',"layer":'AllePunkter'},
+                                       "label":fid}
               
                 if not 'AllePunkter' in self.layers:
                     self.layers['AllePunkter']={'type':'point'}            
@@ -823,7 +824,7 @@ class Digi():
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
                     if all_points is False:
-                        fet.setAttributes([feat["label"], self.layers[l][feat]["attr"]])
+                        fet.setAttributes([self.layers[l][feat]["label"], self.layers[l][feat]["attr"]])
                     else:
                         fet.setAttributes([self.layers[l][feat]["x"],
                                            self.layers[l][feat]["y"],
@@ -854,8 +855,8 @@ class Digi():
                 '''
                 xmax = int(ext.xMaximum()+500)
                 ymax = int(ext.yMaximum()+500)
-                xmin = int(ext.xMinimum()+500)
-                ymin = int(ext.yMinimum()+500)
+                xmin = int(ext.xMinimum()-500)
+                ymin = int(ext.yMinimum()-500)
                 '''
                 xmax = ext.xMaximum()
                 ymax = ext.yMaximum()
