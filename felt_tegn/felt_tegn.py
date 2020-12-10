@@ -722,6 +722,18 @@ class Digi():
                         '''After we've checked all geometries add the modifed 
                         geometry back to the original feature'''
                         self.layers[target_key][feat1]['geom']=f1_geom
+                        
+    def validate_geom(self,
+                      fix_geom=True):
+        """A geometry validator."""
+        for l in self.layers:
+            if self.layers[l]['type']=='poly' \
+            or self.layers[l]['type']=='zpoly' \
+            or self.layers[l]['type']=='pline':
+                pass
+            
+            
+        pass
                                            
     def feat_export(self, 
                     odir, 
