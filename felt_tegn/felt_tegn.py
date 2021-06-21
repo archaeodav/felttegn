@@ -394,6 +394,7 @@ class LoadData():
         """
         #open file and iterate over lines
         with open(infile, 'r') as i:
+            #TODO add delimiter chooser to UI
             r = csv.reader(i,delimiter=delimiter)
             # restructure if needed based on args
             for row in r:
@@ -424,6 +425,7 @@ class LoadData():
            
             #if line starts with a dash it's a standard code...
             if r[4][0] == '-':
+                #TODO -add delimiter for feature codes
                 #check for first delimiter cos people do different things 
                 space = r[4].find(' ') 
                 dot = r[4].find('.')
