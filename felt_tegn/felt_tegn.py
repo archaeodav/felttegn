@@ -352,7 +352,7 @@ class LoadData():
                         "-FELT1":{"lcode":"F","layer":"Felt","type":"zpoly","pass":1},
                         "-FELT2":{"lcode":None,"layer":"Felt","type":"poly","pass":2},
                         "-FELTUD":{"lcode":None,"layer":"U_Felt","type":"upoly","pass":2},
-                        "-NIVEAU":{"lcode":None,"layer":"Snit","type":"pline","pass":2},
+                        "-NIVEAU":{"lcode":None,"layer":"NIVEAU","type":"pline","pass":2},
                         "-SNIT":{"lcode":None,"layer":"Snit","type":"pline","pass":2},
                         "-MAALEPKT":{"lcode":"M","layer":"Målepunkter","type":"point","pass":2},
                         "-PROEVE":{"lcode":"P","layer":"Prøver","type":"point","pass":2},
@@ -394,7 +394,6 @@ class LoadData():
         """
         #open file and iterate over lines
         with open(infile, 'r') as i:
-            #TODO add delimiter chooser to UI
             r = csv.reader(i,delimiter=delimiter)
             # restructure if needed based on args
             for row in r:
@@ -425,7 +424,6 @@ class LoadData():
            
             #if line starts with a dash it's a standard code...
             if r[4][0] == '-':
-                #TODO -add delimiter for feature codes
                 #check for first delimiter cos people do different things 
                 space = r[4].find(' ') 
                 dot = r[4].find('.')
@@ -449,6 +447,9 @@ class LoadData():
                         fid = r[4][delim+1:]
                     else:
                         kote = r[4]
+                
+                    #print (kote,fid,delim)
+                
                 else:
                     kote = r[4]
                     '''fall-back condition is just to take these into the code
@@ -475,6 +476,9 @@ class LoadData():
                 else:
                     fid = r[4]          
             # Assign feature ID if none exists
+            
+            #print (fid)
+            
             if fid is None:
                 if len(current)==0:
                     tfid = "%s_%s" %(kote,r[3])
@@ -485,6 +489,7 @@ class LoadData():
             if kote.upper() in self.codes.keys():
                 #if so retrieve code from code list
                 code = self.codes[kote.upper()]  
+                #print (code)
                 # get the appropriate layer from the code list
                 layer = code["layer"]
                 # if it's not in our list of layers create it pronto- we'll need it later
@@ -493,12 +498,17 @@ class LoadData():
                 # append the current geometry to current feature
                 current.append([float(r[0]),float(r[1]),float(r[2]),r[3]])
                 
+                #print (current)
+                
                 '''check this feature against the next in the list and to see
                 if it's different or the last point in file. If so we're we're
                 done with this feature and we can assign output to the 1st or 2nd
                 pass feature dicts'''
                 last_pt = False
+                
+                #is it the last pint in the file?
                 if not i==l-1:
+                    #print (self.data[i+1][4],r[4])
                     if self.data[i+1][4] != r[4]:
                         last_pt = True
                 else:
@@ -527,7 +537,7 @@ class LoadData():
                         # if this is a second pass feature create it
                         # check first to see if it has a unique id- stones etc don't
                         if not fid in self.feats_2nd_pass.keys():
-                           
+                            
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
                             self.feats_2nd_pass[fid]["label"]=fid
@@ -541,6 +551,9 @@ class LoadData():
                         # add code info and attributes    
                         self.feats_2nd_pass[fid]["code"]=code
                         self.feats_2nd_pass[fid]["attr"]=attr
+                        
+                        #print (self.feats_2nd_pass[fid])
+                        
                     # reset current feature cos we're on to the next
                     current = []
             
@@ -553,7 +566,8 @@ class LoadData():
             i =i+1
             
             if kote_file is True:
-                self.all_points[idid]={"points":[[float(r[0]),float(r[1]),float(r[2]),r[3]]],
+                pt_id = 'pt_%s' %(idid)
+                self.all_points[pt_id]={"points":[[float(r[0]),float(r[1]),float(r[2]),r[3]]],
                                        "x":float(r[0]),
                                        "y":float(r[1]),
                                        "z":float(r[2]),
@@ -601,9 +615,14 @@ class Digi():
                 indata.parsefile(f, kote_file=kote_file)
                 self.layers = indata.layers
                 
+                #print (self.layers)
+                #print (indata.feats_2nd_pass)
+                
                 # Merge dictionaries containing features
-                for d in (indata.feats_1st_pass,indata.feats_2nd_pass,indata.all_points): 
-                    self.features.update(d) 
+                for d in (indata.feats_1st_pass,indata.feats_2nd_pass,indata.all_points):
+                    self.features.update(d)
+                
+                print (self.features,'***\n')
                 
                 # Generate filename template for output
                 if len(os.path.split(f)[-1])>2:
@@ -629,6 +648,7 @@ class Digi():
         for feat in self.features:
             #The current feature
             f = self.features[feat]
+            #print (f)
             #list to contain points
             pts = []
             # append points as QGIS geometries
@@ -687,7 +707,7 @@ class Digi():
                                       "y":f['y'],
                                       "z":f['z'],
                                       "punkt_id":f['punkt_id'],
-                                      "Kote":f["kote"],
+                                      "Type":f["kote"],
                                       "Fid":f['Fid'],
                                       "attr":attr}
         # Modify features if true
@@ -724,18 +744,6 @@ class Digi():
                         '''After we've checked all geometries add the modifed 
                         geometry back to the original feature'''
                         self.layers[target_key][feat1]['geom']=f1_geom
-                        
-    def validate_geom(self,
-                      fix_geom=True):
-        """A geometry validator."""
-        for l in self.layers:
-            if self.layers[l]['type']=='poly' \
-            or self.layers[l]['type']=='zpoly' \
-            or self.layers[l]['type']=='pline':
-                pass
-            
-            
-        pass
                                            
     def feat_export(self, 
                     odir, 
@@ -806,7 +814,7 @@ class Digi():
                 fields.append(QgsField("Y", QVariant.Double))
                 fields.append(QgsField("Z", QVariant.Double))
                 fields.append(QgsField("PtID", QVariant.String))
-                fields.append(QgsField("Kote", QVariant.String))
+                fields.append(QgsField("Type", QVariant.String))
                 fields.append(QgsField("FeatID", QVariant.String))
                 fields.append(QgsField("Attr", QVariant.String))
                 
@@ -844,7 +852,7 @@ class Digi():
                                            self.layers[l][feat]["y"],
                                            self.layers[l][feat]["z"],
                                            self.layers[l][feat]["punkt_id"],
-                                           self.layers[l][feat]["Kote"],
+                                           self.layers[l][feat]["Type"],
                                            self.layers[l][feat]["Fid"],
                                            self.layers[l][feat]["attr"]])
                     pr.addFeatures([fet])
