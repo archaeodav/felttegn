@@ -448,13 +448,14 @@ class LoadData():
                     else:
                         kote = r[4]
                 
-                    #print (kote,fid,delim)
                 
                 else:
                     kote = r[4]
                     '''fall-back condition is just to take these into the code
                     if it's wrong it will get picked up by error handling when we
                     get the code'''
+                    
+                
 
                 if not fid is None:
                     '''split off attributes from id'''    
@@ -477,7 +478,6 @@ class LoadData():
                     fid = r[4]          
             # Assign feature ID if none exists
             
-            #print (fid)
             
             if fid is None:
                 if len(current)==0:
@@ -489,7 +489,6 @@ class LoadData():
             if kote.upper() in self.codes.keys():
                 #if so retrieve code from code list
                 code = self.codes[kote.upper()]  
-                #print (code)
                 # get the appropriate layer from the code list
                 layer = code["layer"]
                 # if it's not in our list of layers create it pronto- we'll need it later
@@ -497,8 +496,6 @@ class LoadData():
                     self.layers[layer]={'type':code["type"]}    
                 # append the current geometry to current feature
                 current.append([float(r[0]),float(r[1]),float(r[2]),r[3]])
-                
-                #print (current)
                 
                 '''check this feature against the next in the list and to see
                 if it's different or the last point in file. If so we're we're
@@ -508,7 +505,6 @@ class LoadData():
                 
                 #is it the last pint in the file?
                 if not i==l-1:
-                    #print (self.data[i+1][4],r[4])
                     if self.data[i+1][4] != r[4]:
                         last_pt = True
                 else:
@@ -552,7 +548,6 @@ class LoadData():
                         self.feats_2nd_pass[fid]["code"]=code
                         self.feats_2nd_pass[fid]["attr"]=attr
                         
-                        #print (self.feats_2nd_pass[fid])
                         
                     # reset current feature cos we're on to the next
                     current = []
@@ -615,14 +610,9 @@ class Digi():
                 indata.parsefile(f, kote_file=kote_file)
                 self.layers = indata.layers
                 
-                #print (self.layers)
-                #print (indata.feats_2nd_pass)
-                
                 # Merge dictionaries containing features
                 for d in (indata.feats_1st_pass,indata.feats_2nd_pass,indata.all_points):
                     self.features.update(d)
-                
-                print (self.features,'***\n')
                 
                 # Generate filename template for output
                 if len(os.path.split(f)[-1])>2:
@@ -648,7 +638,6 @@ class Digi():
         for feat in self.features:
             #The current feature
             f = self.features[feat]
-            #print (f)
             #list to contain points
             pts = []
             # append points as QGIS geometries
