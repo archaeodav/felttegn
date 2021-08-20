@@ -10,7 +10,7 @@ This is will only be updated afeter testing of significant updates- to get the m
 
 
 ## Reporting problems
-Please either report issues on GitHub or by email
+Please report issues on GitHub rather than by email. It's also very helpful if you can include the import text file as we need examples.
 
 ## Compatability 
 We're testing on Qgis 3.10 and later. It works on earlier versions, but there may be some errors / unexpected behaviours
