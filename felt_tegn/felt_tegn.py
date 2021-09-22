@@ -359,7 +359,8 @@ class LoadData():
                         "-FUND":{"lcode":"X","layer":"Fund","type":"point","pass":2},
                         "-KOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2},
                         "-BUNDKOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2},
-                        "-LAG":{"lcode":"L","layer":"Lag","type":"poly","pass":2},
+                        "-LAG":{"lcode":None,"layer":"Lag","type":"poly","pass":2},
+                        "-STEN":{"lcode":"S","layer":"Sten","type":"poly","pass":2},
                         "-MANUELT":{"lcode":None,"layer":"Fejl","type":"point","pass":2}}
             
             # loop through codes to check if they have aliases
@@ -442,20 +443,17 @@ class LoadData():
                         delim = space
                 # slice accordingly        
                 if not delim is None:
-                    if not delim == len(r)-1:
+                    if not delim == len(r[4])-1:
                         kote = r[4][:delim]
                         fid = r[4][delim+1:]
                     else:
                         kote = r[4]
-                
                 
                 else:
                     kote = r[4]
                     '''fall-back condition is just to take these into the code
                     if it's wrong it will get picked up by error handling when we
                     get the code'''
-                    
-                
 
                 if not fid is None:
                     '''split off attributes from id'''    
@@ -477,14 +475,13 @@ class LoadData():
                 else:
                     fid = r[4]          
             # Assign feature ID if none exists
-            
-            
+                      
             if fid is None:
                 if len(current)==0:
                     tfid = "%s_%s" %(kote,r[3])
                     #tfid = "%s" %(r[3])
                 fid = tfid
-                   
+            
             # check if code is in our code list
             if kote.upper() in self.codes.keys():
                 #if so retrieve code from code list
@@ -505,7 +502,7 @@ class LoadData():
                 
                 #is it the last pint in the file?
                 if not i==l-1:
-                    if self.data[i+1][4] != r[4]:
+                     if self.data[i+1][4] != r[4]:
                         last_pt = True
                 else:
                     last_pt = True
@@ -547,6 +544,7 @@ class LoadData():
                         # add code info and attributes    
                         self.feats_2nd_pass[fid]["code"]=code
                         self.feats_2nd_pass[fid]["attr"]=attr
+                        
                         
                         
                     # reset current feature cos we're on to the next
@@ -614,6 +612,7 @@ class Digi():
                 for d in (indata.feats_1st_pass,indata.feats_2nd_pass,indata.all_points):
                     self.features.update(d)
                 
+                                
                 # Generate filename template for output
                 if len(os.path.split(f)[-1])>2:
                     self.fname = '_'.join(os.path.split(f)[-1].split('.')[0:-1])
@@ -638,6 +637,7 @@ class Digi():
         for feat in self.features:
             #The current feature
             f = self.features[feat]
+            
             #list to contain points
             pts = []
             # append points as QGIS geometries
@@ -977,6 +977,7 @@ class Artist():
         if self.layer_def is None:
             self.layer_def = {"Felt":{'do':0,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '243,235,219,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'dash dot', 'outline_width': '0.26', 'outline_width_unit': 'MM', 'style': 'solid'}},
                               "Anlæg":{'do':1,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '158,158,158,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
+                              "Sten":{'do':1,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '78,78,78,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
                               "Snit":{'do':3, "style":{'capstyle': 'square', 'customdash': '5;2', 'customdash_map_unit_scale': '3x:0,0,0,0,0,0', 'customdash_unit': 'MM', 'draw_inside_polygon': '0', 'joinstyle': 'bevel', 'line_color': '227,24,16,255', 'line_style': 'solid', 'line_width': '0.26', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'ring_filter': '0', 'use_custom_dash': '0', 'width_map_unit_scale': '3x:0,0,0,0,0,0'}},
                               "Lag":{'do':2,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '133,104,69,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
                               "Kote":{'do':3,"style":{'angle': '0', 'color': '0,0,0,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '255,255,255,255', 'outline_style': 'solid', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '2', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
@@ -991,6 +992,7 @@ class Artist():
 
     def order_layers(self, out_layers):
         draw_list = []
+        
         
         for layer in out_layers:
             l = layer[1]
