@@ -513,7 +513,14 @@ class LoadData():
                 if last_pt is True:   
                     #add prefix to label
                     if not label is None:
-                        label = code["prefix"]+label
+                        try:
+                            int(label)
+                            label = code["prefix"]+label
+                        except ValueError:
+                            pass
+                    
+                    label = label.upper()
+                    
                     # ... unless it's a first pass feature
                     if code["pass"] == 1:
                         # I don't trust the feature ids from these to be unique 
@@ -700,7 +707,7 @@ class Digi():
                                       "y":f['y'],
                                       "z":f['z'],
                                       "punkt_id":f['punkt_id'],
-                                      "Type":f["kote"],
+                                      "Type":f["type"],
                                       "Fid":f['Fid'],
                                       "attr":attr}
         # Modify features if true
@@ -835,7 +842,7 @@ class Digi():
             
             # Add features to memory layer
             for feat in self.layers[l].keys():
-                if feat != 'type' and feat !='attr':
+                if feat != 'type' and feat !='attr' and feat !='prefix':
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
                     if all_points is False:
