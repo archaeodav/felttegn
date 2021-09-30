@@ -343,25 +343,25 @@ class LoadData():
                  2nd pass- all the normal stuff"""
                     
         if default_codes is True:
-            self.codes={"-ANLG":{"lcode":"A","layer":"Anlæg","type":"poly","pass":2},
-                        "-ZZANLG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":2},
-                        "-ZZANLAEG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":2},
-                        "-FYLDSKIFTE":{"lcode":None,"layer":"Anlæg","type":"poly","pass":1},
-                        "-PROFIL":{"lcode":None,"layer":"Profil","type":"poly","pass":2},
-                        "-VAND":{"lcode":None,"layer":"Anlæg","type":"poly","pass":2},
-                        "-FELT1":{"lcode":"F","layer":"Felt","type":"zpoly","pass":1},
-                        "-FELT2":{"lcode":None,"layer":"Felt","type":"poly","pass":2},
-                        "-FELTUD":{"lcode":None,"layer":"U_Felt","type":"upoly","pass":2},
-                        "-NIVEAU":{"lcode":None,"layer":"NIVEAU","type":"pline","pass":2},
-                        "-SNIT":{"lcode":None,"layer":"Snit","type":"pline","pass":2},
-                        "-MAALEPKT":{"lcode":"M","layer":"Målepunkter","type":"point","pass":2},
-                        "-PROEVE":{"lcode":"P","layer":"Prøver","type":"point","pass":2},
-                        "-FUND":{"lcode":"X","layer":"Fund","type":"point","pass":2},
-                        "-KOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2},
-                        "-BUNDKOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2},
-                        "-LAG":{"lcode":None,"layer":"Lag","type":"poly","pass":2},
-                        "-STEN":{"lcode":"S","layer":"Sten","type":"poly","pass":2},
-                        "-MANUELT":{"lcode":None,"layer":"Fejl","type":"point","pass":2}}
+            self.codes={"-ANLG":{"lcode":"A","layer":"Anlæg","type":"poly","pass":2,"prefix":'A'},
+                        "-ZZANLG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":1,"prefix":'A'},
+                        "-ZZANLAEG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":1,"prefix":'A'},
+                        "-FYLDSKIFTE":{"lcode":None,"layer":"Anlæg","type":"poly","pass":1,"prefix":''},
+                        "-PROFIL":{"lcode":None,"layer":"Profil","type":"poly","pass":2,"prefix":''},
+                        "-VAND":{"lcode":None,"layer":"Anlæg","type":"poly","pass":2,"prefix":''},
+                        "-FELT1":{"lcode":"F","layer":"Felt","type":"zpoly","pass":1,"prefix":''},
+                        "-FELT2":{"lcode":None,"layer":"Felt","type":"poly","pass":2,"prefix":''},
+                        "-FELTUD":{"lcode":None,"layer":"U_Felt","type":"upoly","pass":2,"prefix":''},
+                        "-NIVEAU":{"lcode":None,"layer":"NIVEAU","type":"pline","pass":2,"prefix":''},
+                        "-SNIT":{"lcode":None,"layer":"Snit","type":"pline","pass":2,"prefix":''},
+                        "-MAALEPKT":{"lcode":"M","layer":"Målepunkter","type":"point","pass":2,"prefix":''},
+                        "-PROEVE":{"lcode":"P","layer":"Prøver","type":"point","pass":2,"prefix":''},
+                        "-FUND":{"lcode":"X","layer":"Fund","type":"point","pass":2,"prefix":'X'},
+                        "-KOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
+                        "-BUNDKOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
+                        "-LAG":{"lcode":None,"layer":"Lag","type":"poly","pass":2,"prefix":''},
+                        "-STEN":{"lcode":"S","layer":"Sten","type":"poly","pass":2,"prefix":''},
+                        "-MANUELT":{"lcode":None,"layer":"Fejl","type":"point","pass":2,"prefix":''}}
             
             # loop through codes to check if they have aliases
             lcodes = {}
@@ -388,7 +388,7 @@ class LoadData():
                   ididx=3, # index for point id
                   kidx=4, # index for arkdigi code
                   nidx=5, # index for notes field
-                  proj = None, # TODO handle projections from GUI
+                  proj = None, # handle projections from GUI
                   kote_file = False):
         """
         method loads and parses file
@@ -475,12 +475,15 @@ class LoadData():
                 else:
                     fid = r[4]          
             # Assign feature ID if none exists
+            
+            label = None
                       
             if fid is None:
                 if len(current)==0:
-                    tfid = "%s_%s" %(kote,r[3])
+                    fid = "%s_%s" %(kote,r[3])
                     #tfid = "%s" %(r[3])
-                fid = tfid
+            else:
+                label = fid
             
             # check if code is in our code list
             if kote.upper() in self.codes.keys():
@@ -490,7 +493,7 @@ class LoadData():
                 layer = code["layer"]
                 # if it's not in our list of layers create it pronto- we'll need it later
                 if not layer in self.layers.keys():
-                    self.layers[layer]={'type':code["type"]}    
+                    self.layers[layer]={'type':code["type"],'prefix':code["prefix"]}    
                 # append the current geometry to current feature
                 current.append([float(r[0]),float(r[1]),float(r[2]),r[3]])
                 
@@ -507,9 +510,11 @@ class LoadData():
                 else:
                     last_pt = True
                     
-                if last_pt is True:                    
+                if last_pt is True:   
+                    #add prefix to label
+                    if not label is None:
+                        label = code["prefix"]+label
                     # ... unless it's a first pass feature
-                    #TODO -add a 'label' attribute to the dicts
                     if code["pass"] == 1:
                         # I don't trust the feature ids from these to be unique 
                         feat_id = "%s_%s" %(kote, fid)
@@ -519,7 +524,7 @@ class LoadData():
                             self.feats_1st_pass[feat_id]={}
                             self.feats_1st_pass[feat_id]["code"]=code
                             self.feats_1st_pass[feat_id]["points"]=current
-                            self.feats_1st_pass[feat_id]["label"]=fid
+                            self.feats_1st_pass[feat_id]["label"]=label
                         else:
                             #if it's not new add the points to the existing feature
                             for c in current:
@@ -533,13 +538,12 @@ class LoadData():
                             
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
-                            self.feats_2nd_pass[fid]["label"]=fid
+                            self.feats_2nd_pass[fid]["label"]=label
                         else:
-                            lbl = fid
                             fid = "%s_%s" %(kote, current[0][3])
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
-                            self.feats_2nd_pass[fid]["label"]=lbl
+                            self.feats_2nd_pass[fid]["label"]=label
                             
                         # add code info and attributes    
                         self.feats_2nd_pass[fid]["code"]=code
@@ -566,7 +570,7 @@ class LoadData():
                                        "z":float(r[2]),
                                        "punkt_id":r[3],
                                        "Fid":fid,
-                                       "kote":kote,
+                                       "type":kote,
                                        "attr":attr,
                                        "code":{"type":'point',"layer":'AllePunkter'},
                                        "label":fid}
