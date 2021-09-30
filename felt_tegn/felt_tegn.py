@@ -714,6 +714,18 @@ class Digi():
         if mod_feats is True:
             self.mod_features()       
             
+    def validator(self):
+        '''Method intended to validate features and return error messages to 
+        the logfile and to the UI'''    
+        self.validate_dupes()
+        pass
+    
+    def validate_dupes(self):
+        '''method to identify duplicate features'''
+        pass
+    
+    
+            
     def mod_features(self):
         # Method for modifiying features based on intersecting geometries
         for l in self.layers:
