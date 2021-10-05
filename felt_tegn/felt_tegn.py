@@ -325,7 +325,8 @@ class LoadData():
         these are deifned as a dict with the following attributes:
              key - text string identifying code
              ...sub dict keys... 
-            - lcode : if not none first letter of sting indicates point / feature.
+            - Aliases : Can a different code be used- if so list of codes. most
+            frequent use of this is a singl letter prefix denoting feature type.
                       e.g. A1 = Anlæg, X1= Find etc.
             - layer : output layer name to append features to
             - type : geometric type object passed to Digi class. these are:
@@ -340,35 +341,41 @@ class LoadData():
              - pass : what stage in the iterator are these taken in?:
                  1st pass- big trenches, fyldskift etc where people stop &
                  record anlæg etc in the middle
-                 2nd pass- all the normal stuff"""
-                    
+                 2nd pass- all the normal stuff
+             - prefix : prefix prepended to IDs on export of features e.g. A1234,
+             X567 etc."""
+        
+        #TODO- Take the redundant stuff out of this and have a seperate layer definition 
+        #e.g. prefix, type, all the stuff from layer def in the artist class
+        # NOT URGENT
+        
         if default_codes is True:
-            self.codes={"-ANLG":{"lcode":"A","layer":"Anlæg","type":"poly","pass":2,"prefix":'A'},
-                        "-ZZANLG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":1,"prefix":'A'},
-                        "-ZZANLAEG":{"lcode":None,"layer":"Anlæg","type":"zpoly","pass":1,"prefix":'A'},
-                        "-FYLDSKIFTE":{"lcode":None,"layer":"Anlæg","type":"poly","pass":1,"prefix":''},
-                        "-PROFIL":{"lcode":None,"layer":"Profil","type":"poly","pass":2,"prefix":''},
-                        "-VAND":{"lcode":None,"layer":"Anlæg","type":"poly","pass":2,"prefix":''},
-                        "-FELT1":{"lcode":"F","layer":"Felt","type":"zpoly","pass":1,"prefix":''},
-                        "-FELT2":{"lcode":None,"layer":"Felt","type":"poly","pass":2,"prefix":''},
-                        "-FELTUD":{"lcode":None,"layer":"U_Felt","type":"upoly","pass":2,"prefix":''},
-                        "-NIVEAU":{"lcode":None,"layer":"NIVEAU","type":"pline","pass":2,"prefix":''},
-                        "-SNIT":{"lcode":None,"layer":"Snit","type":"pline","pass":2,"prefix":''},
-                        "-MAALEPKT":{"lcode":"M","layer":"Målepunkter","type":"point","pass":2,"prefix":''},
-                        "-PROEVE":{"lcode":"P","layer":"Prøver","type":"point","pass":2,"prefix":''},
-                        "-FUND":{"lcode":"X","layer":"Fund","type":"point","pass":2,"prefix":'X'},
-                        "-KOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
-                        "-BUNDKOTE":{"lcode":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
-                        "-LAG":{"lcode":None,"layer":"Lag","type":"poly","pass":2,"prefix":''},
-                        "-STEN":{"lcode":"S","layer":"Sten","type":"poly","pass":2,"prefix":''},
-                        "-MANUELT":{"lcode":None,"layer":"Fejl","type":"point","pass":2,"prefix":''}}
+            self.codes={"-ANLG":{"Aliases":["A"],"layer":"Anlæg","type":"poly","pass":2,"prefix":'A'},
+                        "-ZZANLG":{"Aliases":["-ZZANLAEG"],"layer":"Anlæg","type":"zpoly","pass":1,"prefix":'A'},
+                        "-FYLDSKIFTE":{"Aliases":None,"layer":"Anlæg","type":"poly","pass":1,"prefix":''},
+                        "-PROFIL":{"Aliases":None,"layer":"Profil","type":"poly","pass":2,"prefix":''},
+                        "-VAND":{"Aliases":None,"layer":"Anlæg","type":"poly","pass":2,"prefix":''},
+                        "-FELT1":{"Aliases":["F"],"layer":"Felt","type":"zpoly","pass":1,"prefix":''},
+                        "-FELT2":{"Aliases":None,"layer":"Felt","type":"poly","pass":2,"prefix":''},
+                        "-FELTUD":{"Aliases":None,"layer":"U_Felt","type":"upoly","pass":2,"prefix":''},
+                        "-NIVEAU":{"Aliases":None,"layer":"NIVEAU","type":"pline","pass":2,"prefix":''},
+                        "-SNIT":{"Aliases":None,"layer":"Snit","type":"pline","pass":2,"prefix":''},
+                        "-MAALEPKT":{"Aliases":["M"],"layer":"Målepunkter","type":"point","pass":2,"prefix":''},
+                        "-PROEVE":{"Aliases":["P"],"layer":"Prøver","type":"point","pass":2,"prefix":''},
+                        "-FUND":{"Aliases":["X"],"layer":"Fund","type":"point","pass":2,"prefix":'X'},
+                        "-KOTE":{"Aliases":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
+                        "-BUNDKOTE":{"Aliases":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
+                        "-LAG":{"Aliases":None,"layer":"Lag","type":"poly","pass":2,"prefix":''},
+                        "-STEN":{"Aliases":["S"],"layer":"Sten","type":"poly","pass":2,"prefix":''},
+                        "-MANUELT":{"Aliases":None,"layer":"Fejl","type":"point","pass":2,"prefix":''}}
             
             # loop through codes to check if they have aliases
             lcodes = {}
             for k in self.codes.keys():
-                if not self.codes[k]["lcode"] is None:
+                if not self.codes[k]["Aliases"] is None:
                     # if they do add the code info under the alias
-                    lcodes[self.codes[k]["lcode"]]=self.codes[k]
+                    for alias in self.codes[k]["Aliases"]:
+                        lcodes[alias]=self.codes[k]
                   
             for d in (lcodes):
                 self.codes.update(lcodes)
@@ -519,7 +526,8 @@ class LoadData():
                         except ValueError:
                             pass
                     
-                    label = label.upper()
+                    if not label is None:
+                        label = label.upper()
                     
                     # ... unless it's a first pass feature
                     if code["pass"] == 1:
@@ -722,6 +730,8 @@ class Digi():
     
     def validate_dupes(self):
         '''method to identify duplicate features'''
+        #find duplicate IDs
+        # measure distance between duplicates
         pass
     
     
@@ -905,13 +915,25 @@ class Digi():
             #Export layers
             ''' Intention here is to use the QGIS version to set the behaviour 
             depending on how the version of Qgis handles file output, as early
-            desting indicated incomaptiblity with version 3.10. However- seem to 
-            fine with 3.10.3.'''
-            if q_version >= 12:
-                error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
+            testing indicated incomaptiblity with version 3.10. However- seem to 
+            fine with 3.10.3.
+            
+            2021-10-05
+            Amended as writeAsVectorFormatV2 is apparently also now deprecated
+            
+            '''
+            
+            if q_version >= 20:
+                error = QgsVectorFileWriter.writeAsVectorFormatV3(tmp_layer,
                                                                    ofname,
                                                                    transform_context,
                                                                    save_options)
+                
+            elif q_version >= 12:
+                error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
+                                                                   ofname,
+                                                                   transform_context,
+                                                                   save_options)  
                 
             else:
                 print ('OLD METHOD!')
