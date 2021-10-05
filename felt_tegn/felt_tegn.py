@@ -739,7 +739,14 @@ class Digi():
         
         for layer in self.layers:
             label_feat = {}
-            empties = []
+            empty = []
+            
+            geometry_errors ={}
+            
+            dupes = False
+            empties = False
+            g_error = False
+            
             
             for feat in self.layers[layer]:
                 l = self.layers[layer][feat]["label"]
@@ -748,17 +755,25 @@ class Digi():
                         label_feat[l]=[feat]
                     else:
                         label_feat[l].append(feat)
+                        dupes = True
                 else: 
-                    empties.append(feat)
+                    empty.append(feat)
+                    empties = True
+                    
+                if not self.layers[layer]["type"] == 'point':
+                    errors = self.layers[feat]["geom"].validateGeometry(QgsGeometry.validateGeometryGeos)
+                    if len(errors)>0:
+                        geometry_errors[feat]=errors
+                        g_error = True
                         
-                
-            if len(labels)>0:
+            if dupes is True or empties is True or g_error is True:
                 lname = '%s_%s' %('FEJL',layer)
                 
                 if not lname in self.layers.keys():
                     self.layers[lname]={}
                     
-                for lbl in labels
+                #TODO fix how the attributes are handled in the feature constructor 
+                
                 
         pass
     
