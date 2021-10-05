@@ -708,6 +708,9 @@ class Digi():
             # Output constructed features
             if not l == 'AllePunkter':
                 self.layers[l][feat]={"geom":geom,"attr":attr,"label":label}
+                
+                self.validator()
+                
             # Output all points                
             else:
                 self.layers[l][feat]={"geom":geom,
@@ -720,20 +723,47 @@ class Digi():
                                       "attr":attr}
         # Modify features if true
         if mod_feats is True:
-            self.mod_features()       
+            self.mod_features()    
+            
             
     def validator(self):
         '''Method intended to validate features and return error messages to 
         the logfile and to the UI'''    
         self.validate_dupes()
+        self.validate_geometries()
         pass
     
     def validate_dupes(self):
         '''method to identify duplicate features'''
         #find duplicate IDs
-        # measure distance between duplicates
+        
+        for layer in self.layers:
+            label_feat = {}
+            empties = []
+            
+            for feat in self.layers[layer]:
+                l = self.layers[layer][feat]["label"]
+                if len(l)>0:
+                    if not l in label_feat:
+                        label_feat[l]=[feat]
+                    else:
+                        label_feat[l].append(feat)
+                else: 
+                    empties.append(feat)
+                        
+                
+            if len(labels)>0:
+                lname = '%s_%s' %('FEJL',layer)
+                
+                if not lname in self.layers.keys():
+                    self.layers[lname]={}
+                    
+                for lbl in labels
+                
         pass
     
+    def validate_geometries(self):
+        pass
     
             
     def mod_features(self):
