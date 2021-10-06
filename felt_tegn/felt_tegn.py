@@ -709,9 +709,10 @@ class Digi():
             if not l == 'AllePunkter':
                 self.layers[l][feat]={"geom":geom,"attr":attr,"label":label}
                 
-                self.validator()
+                self.validator(l)
                 
-            # Output all points                
+            # Output all points
+            # TODO - change all points to use extra fields
             else:
                 self.layers[l][feat]={"geom":geom,
                                       "x":f['x'],
@@ -726,29 +727,29 @@ class Digi():
             self.mod_features()    
             
             
-    def validator(self):
-        '''Method intended to validate features and return error messages to 
-        the logfile and to the UI'''    
-        self.validate_dupes()
-        self.validate_geometries()
-        pass
-    
-    def validate_dupes(self):
-        '''method to identify duplicate features'''
-        #find duplicate IDs
+    def validator(self,
+                  layer):
+        '''Method intended to validate features and return a layer containing
+        errors if there are any'''    
+               
+        # dict containing labels and features to find duplicate labels
+        label_feat = {}
         
-        for layer in self.layers:
-            label_feat = {}
-            empty = []
-            
-            geometry_errors ={}
-            
-            dupes = False
-            empties = False
-            g_error = False
-            
-            
-            for feat in self.layers[layer]:
+        #list containing features with no label
+        empty = []
+        
+        #dict to conain geometry errors
+        geometry_errors ={}
+        
+        #bool flags 
+        dupes = False
+        empties = False
+        g_error = False
+        
+        
+        #iterate through features
+        for feat in self.layers[layer]:
+            if type(self.layers[layer][feat]) is dict:
                 l = self.layers[layer][feat]["label"]
                 if len(l)>0:
                     if not l in label_feat:
@@ -765,14 +766,39 @@ class Digi():
                     if len(errors)>0:
                         geometry_errors[feat]=errors
                         g_error = True
-                        
-            if dupes is True or empties is True or g_error is True:
-                lname = '%s_%s' %('FEJL',layer)
-                
-                if not lname in self.layers.keys():
-                    self.layers[lname]={}
                     
-                #TODO fix how the attributes are handled in the feature constructor 
+        if dupes is True or empties is True or g_error is True:
+            lname = '%s_%s' %('FEJL',layer)
+            
+            if not lname in self.layers.keys():
+                self.layers[lname]={}
+                self.layers[lname]['extra_fields']=[QgsField("Duplicate_Nr", QVariant.String),
+                                                    QgsField("No_ID", QVariant.String),
+                                                    QgsField("Geometry_error", QVariant.String)]
+                
+            if dupes is True:
+                for l in label_feat:
+                    if len(label_feat[l])>1:
+                        for feat in label_feat[l]:
+                            self.layers[lname][feat]=self.layers[layer][feat]
+                            self.layers[lname][feat]["Duplicate_Nr"] = 'Y'
+                            self.layers[lname][feat]['No_ID']=''
+                            self.layers[lname][feat]['Geometry_error']=''
+            if empties is True:
+                for f in empties:
+                    if not f in self.layers[lname].keys():
+                        self.layers[lname][f]=self.layers[lname][f]
+                    self.layers[lname][f]['No_ID']='Y'
+            if g_error is True:
+                for f in geometry_errors.keys():
+                    if not f in self.layers[lname].keys():
+                        self.layers[lname][f]=self.layers[lname][f]
+                    self.layers[lname][f]['Geometry_error']=' '.join(geometry_errors[f])
+                    
+            
+                    
+                    
+            #TODO fix how the attributes are handled in the feature constructor 
                 
                 
         pass
@@ -874,6 +900,10 @@ class Digi():
             if all_points is False:
                 fields.append(QgsField("Nr", QVariant.String))
                 fields.append(QgsField("Notes", QVariant.String))
+                
+            if 'extra_fields' in l:
+                for field in l['extra_fields']:
+                    fields.append(field)
             
             # If it is all points ...
             elif all_points is True:
@@ -909,9 +939,10 @@ class Digi():
             
             # Add features to memory layer
             for feat in self.layers[l].keys():
-                if feat != 'type' and feat !='attr' and feat !='prefix':
+                if feat != 'type' and feat !='attr' and feat !='prefix' and feat != 'extra_fields':
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
+                    #TODO handle extra fields 
                     if all_points is False:
                         fet.setAttributes([self.layers[l][feat]["label"], self.layers[l][feat]["attr"]])
                     else:
@@ -1078,7 +1109,8 @@ class Artist():
                               "Vand":{'do':2,"style":{'angle': '135', 'color': '0,0,239,255', 'distance': '2', 'distance_map_unit_scale': '3x:0,0,0,0,0,0', 'distance_unit': 'MM', 'line_width': '0.26', 'line_width_map_unit_scale': '3x:0,0,0,0,0,0', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM'}},
                               "Profil":{'do':3,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '133,104,69,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
                               "Fyldskifte":{'do':2,"style":{'angle': '45', 'color': '108,59,0,255', 'distance': '2', 'distance_map_unit_scale': '3x:0,0,0,0,0,0', 'distance_unit': 'MM', 'line_width': '0.26', 'line_width_map_unit_scale': '3x:0,0,0,0,0,0', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM'}},
-                              "AllePunkter":{'do':2,"style":{'angle': '0', 'color': '65,65,65,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '255,255,255,255', 'outline_style': 'no', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '0.6', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}}}
+                              "AllePunkter":{'do':2,"style":{'angle': '0', 'color': '65,65,65,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '255,255,255,255', 'outline_style': 'no', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '0.6', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
+                              "FallBack":{'do':3,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '242,54,9,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}}},
 
     def order_layers(self, out_layers):
         draw_list = []
@@ -1087,7 +1119,10 @@ class Artist():
         for layer in out_layers:
             l = layer[1]
             o = layer[0]
-            draw_list.append((o,l,self.layer_def[l]["do"],self.layer_def[l]["style"]))
+            if l in self.layer_def.keys():
+                draw_list.append((o,l,self.layer_def[l]["do"],self.layer_def[l]["style"]))
+            else:
+                draw_list.append((o,l,self.layer_def[l]["FallBack"],self.layer_def["FallBack"]["style"]))
             
         draw_list.sort(key=itemgetter(2))
             
