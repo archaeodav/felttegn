@@ -350,24 +350,203 @@ class LoadData():
         # NOT URGENT
         
         if default_codes is True:
-            self.codes={"-ANLG":{"Aliases":["A"],"layer":"Anlæg","type":"poly","pass":2,"prefix":'A'},
-                        "-ZZANLG":{"Aliases":["-ZZANLAEG"],"layer":"Anlæg","type":"zpoly","pass":1,"prefix":'A'},
-                        "-FYLDSKIFTE":{"Aliases":None,"layer":"Anlæg","type":"poly","pass":1,"prefix":''},
-                        "-PROFIL":{"Aliases":None,"layer":"Profil","type":"poly","pass":2,"prefix":''},
-                        "-VAND":{"Aliases":None,"layer":"Anlæg","type":"poly","pass":2,"prefix":''},
-                        "-FELT1":{"Aliases":["F"],"layer":"Felt","type":"zpoly","pass":1,"prefix":''},
-                        "-FELT2":{"Aliases":None,"layer":"Felt","type":"poly","pass":2,"prefix":''},
-                        "-FELTUD":{"Aliases":None,"layer":"U_Felt","type":"upoly","pass":2,"prefix":''},
-                        "-NIVEAU":{"Aliases":None,"layer":"NIVEAU","type":"pline","pass":2,"prefix":''},
-                        "-SNIT":{"Aliases":None,"layer":"Snit","type":"pline","pass":2,"prefix":''},
-                        "-MAALEPKT":{"Aliases":["M"],"layer":"Målepunkter","type":"point","pass":2,"prefix":''},
-                        "-PROEVE":{"Aliases":["P"],"layer":"Prøver","type":"point","pass":2,"prefix":''},
-                        "-FUND":{"Aliases":["X"],"layer":"Fund","type":"point","pass":2,"prefix":'X'},
-                        "-KOTE":{"Aliases":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
-                        "-BUNDKOTE":{"Aliases":None,"layer":"Kote","type":"point","pass":2,"prefix":''},
-                        "-LAG":{"Aliases":None,"layer":"Lag","type":"poly","pass":2,"prefix":''},
-                        "-STEN":{"Aliases":["S"],"layer":"Sten","type":"poly","pass":2,"prefix":''},
-                        "-MANUELT":{"Aliases":None,"layer":"Fejl","type":"point","pass":2,"prefix":''}}
+            self.codes={"-ANLG":{"Aliases":["A"],
+                                 "layer":"Anlæg",
+                                 "type":"poly",
+                                 "pass":2
+                                 },
+                        "-ZZANLG":{"Aliases":["-ZZANLAEG"],
+                                   "layer":"Anlæg",
+                                   "type":"zpoly",
+                                   "pass":1
+                                   },
+                        "-FYLDSKIFTE":{"Aliases":None,
+                                       "layer":"Anlæg",
+                                       "type":"poly",
+                                       "pass":1
+                                       },
+                        "-PROFIL":{"Aliases":None,
+                                   "layer":"Profil",
+                                   "type":"poly",
+                                   "pass":2
+                                   },
+                        "-VAND":{"Aliases":None,
+                                 "layer":"Vand",
+                                 "type":"poly",
+                                 "pass":2
+                                 },
+                        "-FELT1":{"Aliases":["F"],
+                                  "layer":"Felt",
+                                  "type":"zpoly",
+                                  "pass":1
+                                  },
+                        "-FELT2":{"Aliases":None,
+                                  "layer":"Felt",
+                                  "type":"poly",
+                                  "pass":2
+                                  },
+                        "-FELTUD":{"Aliases":None,
+                                   "layer":"U_Felt",
+                                   "type":"upoly",
+                                   "pass":2
+                                   },
+                        "-NIVEAU":{"Aliases":None,
+                                   "layer":"NIVEAU",
+                                   "type":"pline",
+                                   "pass":2
+                                   },
+                        "-SNIT":{"Aliases":None,
+                                 "layer":"Snit",
+                                 "type":"pline",
+                                 "pass":2
+                                 },
+                        "-MAALEPKT":{"Aliases":["M"],
+                                     "layer":"Målepunkter",
+                                     "type":"point",
+                                     "pass":2
+                                     },
+                        "-PROEVE":{"Aliases":["P"],
+                                   "layer":"Prøver",
+                                   "type":"point",
+                                   "pass":2
+                                   },
+                        "-FUND":{"Aliases":["X"],
+                                 "layer":"Fund",
+                                 "type":"point",
+                                 "pass":2
+                                 },
+                        "-KOTE":{"Aliases":None,
+                                 "layer":"Kote",
+                                 "type":"point",
+                                 "pass":2
+                                 },
+                        "-BUNDKOTE":{"Aliases":None,
+                                     "layer":"Kote",
+                                     "type":"point",
+                                     "pass":2
+                                     },
+                        "-LAG":{"Aliases":None,
+                                "layer":"Lag",
+                                "type":"poly",
+                                "pass":2},
+                        "-STEN":{"Aliases":["S"],
+                                 "layer":"Sten",
+                                 "type":"poly",
+                                 "pass":2
+                                 },
+                        "-MANUELT":{"Aliases":None,
+                                    "layer":"Fejl",
+                                    "type":"point",
+                                    "pass":2
+                                    }
+                        }
+            
+            self.layers={"Anlæg":{"type":"poly",
+                                  "prefix":'A',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Felt":{"type":"poly",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("note", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                   ("Note","attr")]
+                                  },
+                         "Profil":{"type":"poly",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Note", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                   ("Note","attr")]
+                                 },
+                         "U_Felt":{"type":"poly",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                   ("Kommentar","attr")]
+                                  },
+                         "Snit":{"type":"pline",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Sten":{"type":"poly",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Prøver":{"type":"point",
+                                  "prefix":'P',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Kote":{"type":"point",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String),
+                                            QgsField("X", QVariant.Double),
+                                            QgsField("Y", QVariant.Double),
+                                            QgsField("Z", QVariant.Double)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Lag":{"type":"poly",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Fejl":{"type":"point",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "NIVEAU":{"type":"pline",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Målepunkter":{"type":"point",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String),
+                                            QgsField("X", QVariant.Double),
+                                            QgsField("Y", QVariant.Double),
+                                            QgsField("Z", QVariant.Double)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         "Fund":{"type":"point",
+                                  "prefix":'X',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                          "Vand":{"type":"poly",
+                                  "prefix":'',
+                                  "fields":[QgsField("Avngivelse", QVariant.String),
+                                            QgsField("Kommentar", QVariant.String)],
+                                  "field_mapping":[("Avngivelse","label"),
+                                                    ("Kommentar","attr")]
+                                  },
+                         
+                         }
             
             # loop through codes to check if they have aliases
             lcodes = {}
