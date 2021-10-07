@@ -714,14 +714,22 @@ class Digi():
             # Output all points
             # TODO - change all points to use extra fields
             else:
+                if not 'fields' in self.layers[l]:
+                    self.layers[l]["fields"]=[QgsField("X", QVariant.Double),
+                                                    QgsField("Y", QVariant.Double),
+                                                    QgsField("Z", QVariant.Double),
+                                                    QgsField("PtID", QVariant.String),
+                                                    QgsField("Type", QVariant.String),
+                                                    QgsField("FeatID", QVariant.String),
+                                                    QgsField("Attr", QVariant.String)]
                 self.layers[l][feat]={"geom":geom,
-                                      "x":f['x'],
-                                      "y":f['y'],
-                                      "z":f['z'],
-                                      "punkt_id":f['punkt_id'],
+                                      "X":f['x'],
+                                      "Y":f['y'],
+                                      "Z":f['z'],
+                                      "PtID":f['punkt_id'],
                                       "Type":f["type"],
-                                      "Fid":f['Fid'],
-                                      "attr":attr}
+                                      "FeatID":f['Fid'],
+                                      "Attr":attr}
         # Modify features if true
         if mod_feats is True:
             self.mod_features()    
@@ -772,7 +780,7 @@ class Digi():
             
             if not lname in self.layers.keys():
                 self.layers[lname]={}
-                self.layers[lname]['extra_fields']=[QgsField("Duplicate_Nr", QVariant.String),
+                self.layers[lname]['fields']=[QgsField("Duplicate_Nr", QVariant.String),
                                                     QgsField("No_ID", QVariant.String),
                                                     QgsField("Geometry_error", QVariant.String)]
                 
@@ -901,8 +909,8 @@ class Digi():
                 fields.append(QgsField("Nr", QVariant.String))
                 fields.append(QgsField("Notes", QVariant.String))
                 
-            if 'extra_fields' in l:
-                for field in l['extra_fields']:
+            if 'fields' in l:
+                for field in l['fields']:
                     fields.append(field)
             
             # If it is all points ...
@@ -939,7 +947,7 @@ class Digi():
             
             # Add features to memory layer
             for feat in self.layers[l].keys():
-                if feat != 'type' and feat !='attr' and feat !='prefix' and feat != 'extra_fields':
+                if feat != 'type' and feat !='attr' and feat !='prefix' and feat != 'fields':
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
                     #TODO handle extra fields 
