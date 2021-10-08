@@ -36,6 +36,7 @@ import os.path
 import os
 import csv
 from operator import itemgetter
+import json
 
 from qgis.core import (
   QgsFields,
@@ -233,8 +234,6 @@ class FeltTegn:
         
         # Run the dialog event loop
         result = self.dlg.exec_()
-        
-        print (os.path.dirname(__file__))
        
         # See if OK was pressed
         if result:
@@ -306,28 +305,29 @@ class FeltTegn:
                     out_layers
                     
                     
-
-                            
-class LoadData():
-    """ Class to load data from a csv file"""
+class LoadDefs():
     def __init__(self,
-                 default_codes = True, #TODO Look for an external code file?
-                 codefile = None #TODO path to codefile
-                 ):
+                 codefile = None,
+                 museum_code = 'default'):
         
-        """List to contain data values"""
-        self.data=[]
-        """Codes for feature types"""
-        self.codes = {}
-        # Dicts to contain first and secon pass features, layers and all points
-        self.feats_1st_pass = {}  
-        self.feats_2nd_pass = {}
-        self.layers = {}   
-        self.all_points = {}
-        self.errors =[]
-              
-        """Use default codes? if so set self.codes to use default ardigi codes.
-        these are deifned as a dict with the following attributes:
+        self.codes = None
+        self.layers = None
+        self.styles = None
+        
+        d = None
+        
+        if codefile is None:
+            codefile = os.path.join(os.path.dirname(__file__),'layer_definition.json')
+            
+        if not os.path.exists(codefile) and not os.path.isfile(codefile):
+            raise Exception('No Codefile found')
+            
+        else:
+            with open(codefile, 'r') as ifile:
+                d = json.load(ifile)
+                
+        self.codes=d[museum_code]['codes']
+        """Codes.these are deifned as a dict with the following attributes:
              key - text string identifying code
              ...sub dict keys... 
             - Aliases : Can a different code be used- if so list of codes. most
@@ -347,228 +347,61 @@ class LoadData():
                  1st pass- big trenches, fyldskift etc where people stop &
                  record anlæg etc in the middle
                  2nd pass- all the normal stuff
-             - prefix : prefix prepended to IDs on export of features e.g. A1234,
-             X567 etc."""
+            """
         
-        #TODO- Take the redundant stuff out of this and have a seperate layer definition 
-        #e.g. prefix, type, all the stuff from layer def in the artist class
-        # NOT URGENT
+        self.layers = d[museum_code]['layers']
+        '''Layers. Defined as a dict with the following attributes:
+            key - layer name
+            ... sub dict keys...
+            - fields : list of fields as strings describing instances of the 
+                       QgsField we'll run using eval() when we export data
+            - field_mapping : how do these field names map to the default attributes
+                              of the features. structered ar target field, attribute
+            - prefix : prefix prepended to IDs on export of features e.g. A1234,
+                       X567 etc.
+            - type : geometric primitive type
+                              
+        '''
         
-        if default_codes is True:
-            self.codes={"-ANLG":{"Aliases":["A"],
-                                 "layer":"Anlæg",
-                                 "type":"poly",
-                                 "pass":2
-                                 },
-                        "-ZZANLG":{"Aliases":["-ZZANLAEG"],
-                                   "layer":"Anlæg",
-                                   "type":"zpoly",
-                                   "pass":1
-                                   },
-                        "-FYLDSKIFTE":{"Aliases":None,
-                                       "layer":"Anlæg",
-                                       "type":"poly",
-                                       "pass":1
-                                       },
-                        "-PROFIL":{"Aliases":None,
-                                   "layer":"Profil",
-                                   "type":"poly",
-                                   "pass":2
-                                   },
-                        "-VAND":{"Aliases":None,
-                                 "layer":"Vand",
-                                 "type":"poly",
-                                 "pass":2
-                                 },
-                        "-FELT1":{"Aliases":["F"],
-                                  "layer":"Felt",
-                                  "type":"zpoly",
-                                  "pass":1
-                                  },
-                        "-FELT2":{"Aliases":None,
-                                  "layer":"Felt",
-                                  "type":"poly",
-                                  "pass":2
-                                  },
-                        "-FELTUD":{"Aliases":None,
-                                   "layer":"U_Felt",
-                                   "type":"upoly",
-                                   "pass":2
-                                   },
-                        "-NIVEAU":{"Aliases":None,
-                                   "layer":"NIVEAU",
-                                   "type":"pline",
-                                   "pass":2
-                                   },
-                        "-SNIT":{"Aliases":None,
-                                 "layer":"Snit",
-                                 "type":"pline",
-                                 "pass":2
-                                 },
-                        "-MAALEPKT":{"Aliases":["M"],
-                                     "layer":"Målepunkter",
-                                     "type":"point",
-                                     "pass":2
-                                     },
-                        "-PROEVE":{"Aliases":["P"],
-                                   "layer":"Prøver",
-                                   "type":"point",
-                                   "pass":2
-                                   },
-                        "-FUND":{"Aliases":["X"],
-                                 "layer":"Fund",
-                                 "type":"point",
-                                 "pass":2
-                                 },
-                        "-KOTE":{"Aliases":None,
-                                 "layer":"Kote",
-                                 "type":"point",
-                                 "pass":2
-                                 },
-                        "-BUNDKOTE":{"Aliases":None,
-                                     "layer":"Kote",
-                                     "type":"point",
-                                     "pass":2
-                                     },
-                        "-LAG":{"Aliases":None,
-                                "layer":"Lag",
-                                "type":"poly",
-                                "pass":2},
-                        "-STEN":{"Aliases":["S"],
-                                 "layer":"Sten",
-                                 "type":"poly",
-                                 "pass":2
-                                 },
-                        "-MANUELT":{"Aliases":None,
-                                    "layer":"Fejl",
-                                    "type":"point",
-                                    "pass":2
-                                    }
-                        }
+        self.styles = d[museum_code]['styles']
+        ''' Styles- how woe draw the Layers dict:
+            - key : Layer name
+            - do : drawing order. Int, Used to control how 
+            - style : properties used for qgis renederer
+            . '''
             
-            self.layers={"Anlæg":{"type":"poly",
-                                  "prefix":'A',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Felt":{"type":"poly",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("note", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                   ("Note","attr")]
-                                  },
-                         "Profil":{"type":"poly",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Note", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                   ("Note","attr")]
-                                 },
-                         "U_Felt":{"type":"poly",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                   ("Kommentar","attr")]
-                                  },
-                         "Snit":{"type":"pline",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Sten":{"type":"poly",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Prøver":{"type":"point",
-                                  "prefix":'P',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Kote":{"type":"point",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)',
-                                            'QgsField("X", QVariant.Double)',
-                                            'QgsField("Y", QVariant.Double)',
-                                            'QgsField("Z", QVariant.Double)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Lag":{"type":"poly",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Fejl":{"type":"point",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "NIVEAU":{"type":"pline",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Målepunkter":{"type":"point",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)',
-                                            'QgsField("X", QVariant.Double)',
-                                            'QgsField("Y", QVariant.Double)',
-                                            'QgsField("Z", QVariant.Double)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         "Fund":{"type":"point",
-                                  "prefix":'X',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                          "Vand":{"type":"poly",
-                                  "prefix":'',
-                                  "fields":['QgsField("Avngivelse", QVariant.String)',
-                                            'QgsField("Kommentar", QVariant.String)'],
-                                  "field_mapping":[("Avngivelse","label"),
-                                                    ("Kommentar","attr")]
-                                  },
-                         
-                         }
-            
-            # loop through codes to check if they have aliases
-            lcodes = {}
-            for k in self.codes.keys():
-                if not self.codes[k]["Aliases"] is None:
-                    # if they do add the code info under the alias
-                    for alias in self.codes[k]["Aliases"]:
-                        lcodes[alias]=self.codes[k]
-                  
-            for d in (lcodes):
-                self.codes.update(lcodes)
+class LoadData():
+    """ Class to load data from a csv file"""
+    def __init__(self):
+        
+        """List to contain data values"""
+        self.data=[]
+       
+        
+        """Load data definition from JSON file"""
+        defs = LoadDefs()
+        #codes deifning features and how they're handled
+        self.codes = defs.codes
+        # ditto layers
+        self.layers = defs.layers
+        
+        # Dicts to contain first and second pass features, layers and all points
+        self.feats_1st_pass = {}  
+        self.feats_2nd_pass = {}
+        self.all_points = {}
+        self.errors =[]
+             
+        # loop through codes to check if they have aliases
+        lcodes = {}
+        for k in self.codes.keys():
+            if not self.codes[k]["Aliases"] is None:
+                # if they do add the code info under the alias
+                for alias in self.codes[k]["Aliases"]:
+                    lcodes[alias]=self.codes[k]
+              
+        for d in (lcodes):
+            self.codes.update(lcodes)
 
-        else:
-            ''' load code definitons from a json file. this is extra functionality 
-            to be added in a bit '''
-            #TODO load codefile
-            pass     
     
     def parsefile(self,
                   infile, # path to source file inluding path #TODO from GUI
@@ -965,8 +798,8 @@ class Digi():
             if not lname in self.layers.keys():
                 self.layers[lname]={}
                 self.layers[lname]['fields']=[QgsField("Duplicate_Nr", QVariant.String),
-                                                    QgsField("No_ID", QVariant.String),
-                                                    QgsField("Geometry_error", QVariant.String)]
+                                              QgsField("No_ID", QVariant.String),
+                                              QgsField("Geometry_error", QVariant.String)]
                 
             if dupes is True:
                 for l in label_feat:
@@ -1081,32 +914,13 @@ class Digi():
             #Set up fields
             fields = QgsFields()
             
-            # We have to handle the All points layer differntly.
-            all_points = False
-            
-            #Todo- I don't like this being hardcoded. Change this
-            if l == "AllePunkter":
-                all_points = True
-            
-            # If it's not all points...
-            if all_points is False:
-                fields.append(QgsField("Nr", QVariant.String))
-                fields.append(QgsField("Notes", QVariant.String))
-                
             if 'fields' in l:
                 for field in l['fields']:
-                    fields.append(field)
+                    if type(field) is QgsField:
+                        fields.append(field)
+                    else:
+                        fields.append(eval(field))
             
-            # If it is all points ...
-            elif all_points is True:
-                fields.append(QgsField("X", QVariant.Double))
-                fields.append(QgsField("Y", QVariant.Double))
-                fields.append(QgsField("Z", QVariant.Double))
-                fields.append(QgsField("PtID", QVariant.String))
-                fields.append(QgsField("Type", QVariant.String))
-                fields.append(QgsField("FeatID", QVariant.String))
-                fields.append(QgsField("Attr", QVariant.String))
-                
             # Set geometry type
             if self.layers[l]['type']=='point':
                 gt=QgsWkbTypes.Point
@@ -1288,21 +1102,7 @@ class Artist():
         self.layer_def = layer_def
         
         if self.layer_def is None:
-            self.layer_def = {"Felt":{'do':0,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '243,235,219,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'dash dot', 'outline_width': '0.26', 'outline_width_unit': 'MM', 'style': 'solid'}},
-                              "Anlæg":{'do':1,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '158,158,158,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
-                              "Sten":{'do':1,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '78,78,78,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
-                              "Snit":{'do':3, "style":{'capstyle': 'square', 'customdash': '5;2', 'customdash_map_unit_scale': '3x:0,0,0,0,0,0', 'customdash_unit': 'MM', 'draw_inside_polygon': '0', 'joinstyle': 'bevel', 'line_color': '227,24,16,255', 'line_style': 'solid', 'line_width': '0.26', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'ring_filter': '0', 'use_custom_dash': '0', 'width_map_unit_scale': '3x:0,0,0,0,0,0'}},
-                              "Lag":{'do':2,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '133,104,69,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
-                              "Kote":{'do':3,"style":{'angle': '0', 'color': '0,0,0,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '255,255,255,255', 'outline_style': 'solid', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '2', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
-                              "Fund":{'do':3,"style":{'angle': '0', 'color': '251,154,153,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'cross2', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '0,0,0,255', 'outline_style': 'solid', 'outline_width': '0', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'area', 'size': '2', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
-                              "Prøver":{'do':3,"style":{'angle': '0', 'color': '84,176,74,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '61,128,53,255', 'outline_style': 'solid', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '4', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
-                              "Målepunkter":{'do':3,"style":{'angle': '0', 'color': '172,154,251,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'triangle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '0,0,0,255', 'outline_style': 'solid', 'outline_width': '0', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'area', 'size': '1.6', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
-                              "Niveau":{'do':3,"style":{'angle': '0', 'color': '255,255,255,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'triangle', 'offset': '0,-0.20000000000000001', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '0,0,0,255', 'outline_style': 'solid', 'outline_width': '0', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'area', 'size': '2.4', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
-                              "Vand":{'do':2,"style":{'angle': '135', 'color': '0,0,239,255', 'distance': '2', 'distance_map_unit_scale': '3x:0,0,0,0,0,0', 'distance_unit': 'MM', 'line_width': '0.26', 'line_width_map_unit_scale': '3x:0,0,0,0,0,0', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM'}},
-                              "Profil":{'do':3,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '133,104,69,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}},
-                              "Fyldskifte":{'do':2,"style":{'angle': '45', 'color': '108,59,0,255', 'distance': '2', 'distance_map_unit_scale': '3x:0,0,0,0,0,0', 'distance_unit': 'MM', 'line_width': '0.26', 'line_width_map_unit_scale': '3x:0,0,0,0,0,0', 'line_width_unit': 'MM', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM'}},
-                              "AllePunkter":{'do':2,"style":{'angle': '0', 'color': '65,65,65,255', 'horizontal_anchor_point': '1', 'joinstyle': 'bevel', 'name': 'circle', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '255,255,255,255', 'outline_style': 'no', 'outline_width': '0.4', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width_unit': 'MM', 'scale_method': 'diameter', 'size': '0.6', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'size_unit': 'MM', 'vertical_anchor_point': '1'}},
-                              "FallBack":{'do':3,"style":{'border_width_map_unit_scale': '3x:0,0,0,0,0,0', 'color': '242,54,9,255', 'joinstyle': 'bevel', 'offset': '0,0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'outline_color': '35,35,35,255', 'outline_style': 'solid', 'outline_width': '0.06', 'outline_width_unit': 'MM', 'style': 'solid'}}},
+            self.layer_def = LoadDefs().styles
 
     def order_layers(self, out_layers):
         draw_list = []
