@@ -729,7 +729,6 @@ class Digi():
                 self.validator(l)
                 
             # Output all points
-            # TODO - change all points to use extra fields
             else:
                 if not 'fields' in self.layers[l]:
                     self.layers[l]["fields"]=[QgsField("X", QVariant.Double),
@@ -739,6 +738,15 @@ class Digi():
                                                     QgsField("Type", QVariant.String),
                                                     QgsField("FeatID", QVariant.String),
                                                     QgsField("Attr", QVariant.String)]
+                    
+                    self.layers[l]["field_mapping"]=[['X','X'],
+                                                     ['Y','X'],
+                                                     ['Z','Z'],
+                                                     ['PtID','PtID'],
+                                                     ['Type','Type'],
+                                                     ['FeatID','FeatID'],
+                                                     ['Attr','Attr']]
+                    
                 self.layers[l][feat]={"geom":geom,
                                       "X":f['x'],
                                       "Y":f['y'],
@@ -945,11 +953,21 @@ class Digi():
             
             # Add features to memory layer
             for feat in self.layers[l].keys():
-                if feat != 'type' and feat !='attr' and feat !='prefix' and feat != 'fields':
+                if feat != 'type' and feat !='attr' and feat !='prefix' and feat != 'fields' and feat !='field_mapping':
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
                     #TODO handle extra fields 
-                    if all_points is False:
+                    
+                    counter = 0
+                    for f in fields:
+                        n = f.name()
+                        for fm in self.layers[l]['field_mapping']:
+                            if n == fm[0]:
+                                fet.setAttribute(counter,self.layers[l][feat][fm[1]])
+                            counter +=1
+                        
+                    
+                    '''if all_points is False:
                         fet.setAttributes([self.layers[l][feat]["label"], self.layers[l][feat]["attr"]])
                     else:
                         fet.setAttributes([self.layers[l][feat]["x"],
@@ -958,7 +976,7 @@ class Digi():
                                            self.layers[l][feat]["punkt_id"],
                                            self.layers[l][feat]["Type"],
                                            self.layers[l][feat]["Fid"],
-                                           self.layers[l][feat]["attr"]])
+                                           self.layers[l][feat]["attr"]])'''
                     pr.addFeatures([fet])
                     tmp_layer.updateExtents()
 

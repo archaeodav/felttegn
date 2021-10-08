@@ -210,10 +210,7 @@
                 ],
                 "fields": [
                     "QgsField(\"Avngivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"X\", QVariant.Double)",
-                    "QgsField(\"Y\", QVariant.Double)",
-                    "QgsField(\"Z\", QVariant.Double)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
@@ -249,10 +246,7 @@
                 ],
                 "fields": [
                     "QgsField(\"Avngivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"X\", QVariant.Double)",
-                    "QgsField(\"Y\", QVariant.Double)",
-                    "QgsField(\"Z\", QVariant.Double)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
