@@ -385,6 +385,8 @@ class LoadData():
         # ditto layers
         self.layers = defs.layers
         
+        print (self.codes,self.layers)
+        
         # Dicts to contain first and second pass features, layers and all points
         self.feats_1st_pass = {}  
         self.feats_2nd_pass = {}
@@ -539,7 +541,7 @@ class LoadData():
                     if not label is None:
                         try:
                             int(label)
-                            label = code["prefix"]+label
+                            label = self.layers[code['layer']]["prefix"]+label
                         except ValueError:
                             pass
                     
@@ -726,7 +728,7 @@ class Digi():
             if not l == 'AllePunkter':
                 self.layers[l][feat]={"geom":geom,"attr":attr,"label":label}
                 
-                self.validator(l)
+                #self.validator(l)
                 
             # Output all points
             else:
@@ -746,6 +748,8 @@ class Digi():
                                                      ['Type','Type'],
                                                      ['FeatID','FeatID'],
                                                      ['Attr','Attr']]
+                    
+                    self.layers['prefix']=''
                     
                 self.layers[l][feat]={"geom":geom,
                                       "X":f['x'],
@@ -930,6 +934,7 @@ class Digi():
                         fields.append(eval(field))
             
             # Set geometry type
+            print(self.layers[l]['type'])
             if self.layers[l]['type']=='point':
                 gt=QgsWkbTypes.Point
                 gt = "Point"
@@ -1120,7 +1125,9 @@ class Artist():
         self.layer_def = layer_def
         
         if self.layer_def is None:
-            self.layer_def = LoadDefs().styles
+            self.layer_def = LoadDefs().styles[0]
+            
+            print (type(self.layer_def))
 
     def order_layers(self, out_layers):
         draw_list = []

@@ -5,7 +5,7 @@
                 "Aliases": [
                     "A"
                 ],
-                "layer": "Anlæg",
+                "layer": "AnlÃ¦g",
                 "pass": 2,
                 "type": "poly"
             },
@@ -45,7 +45,7 @@
             },
             "-FYLDSKIFTE": {
                 "Aliases": null,
-                "layer": "Anlæg",
+                "layer": "AnlÃ¦g",
                 "pass": 1,
                 "type": "poly"
             },
@@ -65,7 +65,7 @@
                 "Aliases": [
                     "M"
                 ],
-                "layer": "Målepunkter",
+                "layer": "MÃ¥lepunkter",
                 "pass": 2,
                 "type": "point"
             },
@@ -85,7 +85,7 @@
                 "Aliases": [
                     "P"
                 ],
-                "layer": "Prøver",
+                "layer": "PrÃ¸ver",
                 "pass": 2,
                 "type": "point"
             },
@@ -119,13 +119,13 @@
                 "Aliases": [
                     "-ZZANLAEG"
                 ],
-                "layer": "Anlæg",
+                "layer": "AnlÃ¦g",
                 "pass": 1,
                 "type": "zpoly"
             }
         },
         "layers": {
-            "Anlæg": {
+            "AnlÃ¦g": {
                 "field_mapping": [
                     [
                         "Avngivelse",
@@ -233,7 +233,7 @@
                 "prefix": "",
                 "type": "poly"
             },
-            "Målepunkter": {
+            "MÃ¥lepunkter": {
                 "field_mapping": [
                     [
                         "Avngivelse",
@@ -287,7 +287,7 @@
                 "prefix": "",
                 "type": "poly"
             },
-            "Prøver": {
+            "PrÃ¸ver": {
                 "field_mapping": [
                     [
                         "Avngivelse",
@@ -403,7 +403,7 @@
                         "vertical_anchor_point": "1"
                     }
                 },
-                "Anlæg": {
+                "AnlÃ¦g": {
                     "do": 1,
                     "style": {
                         "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
@@ -531,7 +531,7 @@
                         "style": "solid"
                     }
                 },
-                "Målepunkter": {
+                "MÃ¥lepunkter": {
                     "do": 3,
                     "style": {
                         "angle": "0",
@@ -593,7 +593,7 @@
                         "style": "solid"
                     }
                 },
-                "Prøver": {
+                "PrÃ¸ver": {
                     "do": 3,
                     "style": {
                         "angle": "0",
