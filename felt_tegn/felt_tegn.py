@@ -233,6 +233,8 @@ class FeltTegn:
         
         # Run the dialog event loop
         result = self.dlg.exec_()
+        
+        print (os.path.dirname(__file__))
        
         # See if OK was pressed
         if result:
@@ -302,6 +304,9 @@ class FeltTegn:
                         
                 else:
                     out_layers
+                    
+                    
+
                             
 class LoadData():
     """ Class to load data from a csv file"""
@@ -443,105 +448,105 @@ class LoadData():
             
             self.layers={"Anlæg":{"type":"poly",
                                   "prefix":'A',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Felt":{"type":"poly",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("note", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("note", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                    ("Note","attr")]
                                   },
                          "Profil":{"type":"poly",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Note", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Note", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                    ("Note","attr")]
                                  },
                          "U_Felt":{"type":"poly",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                    ("Kommentar","attr")]
                                   },
                          "Snit":{"type":"pline",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Sten":{"type":"poly",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Prøver":{"type":"point",
                                   "prefix":'P',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Kote":{"type":"point",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String),
-                                            QgsField("X", QVariant.Double),
-                                            QgsField("Y", QVariant.Double),
-                                            QgsField("Z", QVariant.Double)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)',
+                                            'QgsField("X", QVariant.Double)',
+                                            'QgsField("Y", QVariant.Double)',
+                                            'QgsField("Z", QVariant.Double)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Lag":{"type":"poly",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Fejl":{"type":"point",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "NIVEAU":{"type":"pline",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Målepunkter":{"type":"point",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String),
-                                            QgsField("X", QVariant.Double),
-                                            QgsField("Y", QVariant.Double),
-                                            QgsField("Z", QVariant.Double)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)',
+                                            'QgsField("X", QVariant.Double)',
+                                            'QgsField("Y", QVariant.Double)',
+                                            'QgsField("Z", QVariant.Double)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                          "Fund":{"type":"point",
                                   "prefix":'X',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },
                           "Vand":{"type":"poly",
                                   "prefix":'',
-                                  "fields":[QgsField("Avngivelse", QVariant.String),
-                                            QgsField("Kommentar", QVariant.String)],
+                                  "fields":['QgsField("Avngivelse", QVariant.String)',
+                                            'QgsField("Kommentar", QVariant.String)'],
                                   "field_mapping":[("Avngivelse","label"),
                                                     ("Kommentar","attr")]
                                   },

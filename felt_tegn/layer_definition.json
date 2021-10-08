@@ -1,0 +1,683 @@
+{
+    "default": {
+        "codes": {
+            "-ANLG": {
+                "Aliases": [
+                    "A"
+                ],
+                "layer": "Anlæg",
+                "pass": 2,
+                "type": "poly"
+            },
+            "-BUNDKOTE": {
+                "Aliases": null,
+                "layer": "Kote",
+                "pass": 2,
+                "type": "point"
+            },
+            "-FELT1": {
+                "Aliases": [
+                    "F"
+                ],
+                "layer": "Felt",
+                "pass": 1,
+                "type": "zpoly"
+            },
+            "-FELT2": {
+                "Aliases": null,
+                "layer": "Felt",
+                "pass": 2,
+                "type": "poly"
+            },
+            "-FELTUD": {
+                "Aliases": null,
+                "layer": "U_Felt",
+                "pass": 2,
+                "type": "upoly"
+            },
+            "-FUND": {
+                "Aliases": [
+                    "X"
+                ],
+                "layer": "Fund",
+                "pass": 2,
+                "type": "point"
+            },
+            "-FYLDSKIFTE": {
+                "Aliases": null,
+                "layer": "Anlæg",
+                "pass": 1,
+                "type": "poly"
+            },
+            "-KOTE": {
+                "Aliases": null,
+                "layer": "Kote",
+                "pass": 2,
+                "type": "point"
+            },
+            "-LAG": {
+                "Aliases": null,
+                "layer": "Lag",
+                "pass": 2,
+                "type": "poly"
+            },
+            "-MAALEPKT": {
+                "Aliases": [
+                    "M"
+                ],
+                "layer": "Målepunkter",
+                "pass": 2,
+                "type": "point"
+            },
+            "-MANUELT": {
+                "Aliases": null,
+                "layer": "Fejl",
+                "pass": 2,
+                "type": "point"
+            },
+            "-NIVEAU": {
+                "Aliases": null,
+                "layer": "NIVEAU",
+                "pass": 2,
+                "type": "pline"
+            },
+            "-PROEVE": {
+                "Aliases": [
+                    "P"
+                ],
+                "layer": "Prøver",
+                "pass": 2,
+                "type": "point"
+            },
+            "-PROFIL": {
+                "Aliases": null,
+                "layer": "Profil",
+                "pass": 2,
+                "type": "poly"
+            },
+            "-SNIT": {
+                "Aliases": null,
+                "layer": "Snit",
+                "pass": 2,
+                "type": "pline"
+            },
+            "-STEN": {
+                "Aliases": [
+                    "S"
+                ],
+                "layer": "Sten",
+                "pass": 2,
+                "type": "poly"
+            },
+            "-VAND": {
+                "Aliases": null,
+                "layer": "Vand",
+                "pass": 2,
+                "type": "poly"
+            },
+            "-ZZANLG": {
+                "Aliases": [
+                    "-ZZANLAEG"
+                ],
+                "layer": "Anlæg",
+                "pass": 1,
+                "type": "zpoly"
+            }
+        },
+        "layers": {
+            "Anlæg": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "A",
+                "type": "poly"
+            },
+            "Fejl": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "point"
+            },
+            "Felt": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Note",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"note\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "poly"
+            },
+            "Fund": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "X",
+                "type": "point"
+            },
+            "Kote": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)",
+                    "QgsField(\"X\", QVariant.Double)",
+                    "QgsField(\"Y\", QVariant.Double)",
+                    "QgsField(\"Z\", QVariant.Double)"
+                ],
+                "prefix": "",
+                "type": "point"
+            },
+            "Lag": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "poly"
+            },
+            "Målepunkter": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)",
+                    "QgsField(\"X\", QVariant.Double)",
+                    "QgsField(\"Y\", QVariant.Double)",
+                    "QgsField(\"Z\", QVariant.Double)"
+                ],
+                "prefix": "",
+                "type": "point"
+            },
+            "NIVEAU": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "pline"
+            },
+            "Profil": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Note",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Note\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "poly"
+            },
+            "Prøver": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "P",
+                "type": "point"
+            },
+            "Snit": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "pline"
+            },
+            "Sten": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "poly"
+            },
+            "U_Felt": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "poly"
+            },
+            "Vand": {
+                "field_mapping": [
+                    [
+                        "Avngivelse",
+                        "label"
+                    ],
+                    [
+                        "Kommentar",
+                        "attr"
+                    ]
+                ],
+                "fields": [
+                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Kommentar\", QVariant.String)"
+                ],
+                "prefix": "",
+                "type": "poly"
+            }
+        },
+        "styles": [
+            {
+                "AllePunkter": {
+                    "do": 2,
+                    "style": {
+                        "angle": "0",
+                        "color": "65,65,65,255",
+                        "horizontal_anchor_point": "1",
+                        "joinstyle": "bevel",
+                        "name": "circle",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "255,255,255,255",
+                        "outline_style": "no",
+                        "outline_width": "0.4",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM",
+                        "scale_method": "diameter",
+                        "size": "0.6",
+                        "size_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "size_unit": "MM",
+                        "vertical_anchor_point": "1"
+                    }
+                },
+                "Anlæg": {
+                    "do": 1,
+                    "style": {
+                        "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "color": "158,158,158,255",
+                        "joinstyle": "bevel",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "35,35,35,255",
+                        "outline_style": "solid",
+                        "outline_width": "0.06",
+                        "outline_width_unit": "MM",
+                        "style": "solid"
+                    }
+                },
+                "FallBack": {
+                    "do": 3,
+                    "style": {
+                        "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "color": "242,54,9,255",
+                        "joinstyle": "bevel",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "35,35,35,255",
+                        "outline_style": "solid",
+                        "outline_width": "0.06",
+                        "outline_width_unit": "MM",
+                        "style": "solid"
+                    }
+                },
+                "Felt": {
+                    "do": 0,
+                    "style": {
+                        "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "color": "243,235,219,255",
+                        "joinstyle": "bevel",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "35,35,35,255",
+                        "outline_style": "dash dot",
+                        "outline_width": "0.26",
+                        "outline_width_unit": "MM",
+                        "style": "solid"
+                    }
+                },
+                "Fund": {
+                    "do": 3,
+                    "style": {
+                        "angle": "0",
+                        "color": "251,154,153,255",
+                        "horizontal_anchor_point": "1",
+                        "joinstyle": "bevel",
+                        "name": "cross2",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "0,0,0,255",
+                        "outline_style": "solid",
+                        "outline_width": "0",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM",
+                        "scale_method": "area",
+                        "size": "2",
+                        "size_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "size_unit": "MM",
+                        "vertical_anchor_point": "1"
+                    }
+                },
+                "Fyldskifte": {
+                    "do": 2,
+                    "style": {
+                        "angle": "45",
+                        "color": "108,59,0,255",
+                        "distance": "2",
+                        "distance_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "distance_unit": "MM",
+                        "line_width": "0.26",
+                        "line_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "line_width_unit": "MM",
+                        "offset": "0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM"
+                    }
+                },
+                "Kote": {
+                    "do": 3,
+                    "style": {
+                        "angle": "0",
+                        "color": "0,0,0,255",
+                        "horizontal_anchor_point": "1",
+                        "joinstyle": "bevel",
+                        "name": "circle",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "255,255,255,255",
+                        "outline_style": "solid",
+                        "outline_width": "0.4",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM",
+                        "scale_method": "diameter",
+                        "size": "2",
+                        "size_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "size_unit": "MM",
+                        "vertical_anchor_point": "1"
+                    }
+                },
+                "Lag": {
+                    "do": 2,
+                    "style": {
+                        "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "color": "133,104,69,255",
+                        "joinstyle": "bevel",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "35,35,35,255",
+                        "outline_style": "solid",
+                        "outline_width": "0.06",
+                        "outline_width_unit": "MM",
+                        "style": "solid"
+                    }
+                },
+                "Målepunkter": {
+                    "do": 3,
+                    "style": {
+                        "angle": "0",
+                        "color": "172,154,251,255",
+                        "horizontal_anchor_point": "1",
+                        "joinstyle": "bevel",
+                        "name": "triangle",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "0,0,0,255",
+                        "outline_style": "solid",
+                        "outline_width": "0",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM",
+                        "scale_method": "area",
+                        "size": "1.6",
+                        "size_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "size_unit": "MM",
+                        "vertical_anchor_point": "1"
+                    }
+                },
+                "Niveau": {
+                    "do": 3,
+                    "style": {
+                        "angle": "0",
+                        "color": "255,255,255,255",
+                        "horizontal_anchor_point": "1",
+                        "joinstyle": "bevel",
+                        "name": "triangle",
+                        "offset": "0,-0.20000000000000001",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "0,0,0,255",
+                        "outline_style": "solid",
+                        "outline_width": "0",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM",
+                        "scale_method": "area",
+                        "size": "2.4",
+                        "size_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "size_unit": "MM",
+                        "vertical_anchor_point": "1"
+                    }
+                },
+                "Profil": {
+                    "do": 3,
+                    "style": {
+                        "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "color": "133,104,69,255",
+                        "joinstyle": "bevel",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "35,35,35,255",
+                        "outline_style": "solid",
+                        "outline_width": "0.06",
+                        "outline_width_unit": "MM",
+                        "style": "solid"
+                    }
+                },
+                "Prøver": {
+                    "do": 3,
+                    "style": {
+                        "angle": "0",
+                        "color": "84,176,74,255",
+                        "horizontal_anchor_point": "1",
+                        "joinstyle": "bevel",
+                        "name": "circle",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "61,128,53,255",
+                        "outline_style": "solid",
+                        "outline_width": "0.4",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM",
+                        "scale_method": "diameter",
+                        "size": "4",
+                        "size_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "size_unit": "MM",
+                        "vertical_anchor_point": "1"
+                    }
+                },
+                "Snit": {
+                    "do": 3,
+                    "style": {
+                        "capstyle": "square",
+                        "customdash": "5;2",
+                        "customdash_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "customdash_unit": "MM",
+                        "draw_inside_polygon": "0",
+                        "joinstyle": "bevel",
+                        "line_color": "227,24,16,255",
+                        "line_style": "solid",
+                        "line_width": "0.26",
+                        "line_width_unit": "MM",
+                        "offset": "0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "ring_filter": "0",
+                        "use_custom_dash": "0",
+                        "width_map_unit_scale": "3x:0,0,0,0,0,0"
+                    }
+                },
+                "Sten": {
+                    "do": 1,
+                    "style": {
+                        "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "color": "78,78,78,255",
+                        "joinstyle": "bevel",
+                        "offset": "0,0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_color": "35,35,35,255",
+                        "outline_style": "solid",
+                        "outline_width": "0.06",
+                        "outline_width_unit": "MM",
+                        "style": "solid"
+                    }
+                },
+                "Vand": {
+                    "do": 2,
+                    "style": {
+                        "angle": "135",
+                        "color": "0,0,239,255",
+                        "distance": "2",
+                        "distance_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "distance_unit": "MM",
+                        "line_width": "0.26",
+                        "line_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "line_width_unit": "MM",
+                        "offset": "0",
+                        "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "offset_unit": "MM",
+                        "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+                        "outline_width_unit": "MM"
+                    }
+                }
+            }
+        ]
+    }
+}
