@@ -385,8 +385,6 @@ class LoadData():
         # ditto layers
         self.layers = defs.layers
         
-        print (self.codes,self.layers)
-        
         # Dicts to contain first and second pass features, layers and all points
         self.feats_1st_pass = {}  
         self.feats_2nd_pass = {}
@@ -749,7 +747,7 @@ class Digi():
                                                      ['FeatID','FeatID'],
                                                      ['Attr','Attr']]
                     
-                    self.layers['prefix']=''
+                    self.layers[l]['prefix']=''
                     
                 self.layers[l][feat]={"geom":geom,
                                       "X":f['x'],
@@ -926,15 +924,16 @@ class Digi():
             #Set up fields
             fields = QgsFields()
             
-            if 'fields' in l:
-                for field in l['fields']:
+            if 'fields' in self.layers[l]:
+                for field in self.layers[l]['fields']:
                     if type(field) is QgsField:
                         fields.append(field)
                     else:
                         fields.append(eval(field))
+                print (fields.names(),fields.indexOf('Kommentar'))
             
             # Set geometry type
-            print(self.layers[l]['type'])
+            print(l)
             if self.layers[l]['type']=='point':
                 gt=QgsWkbTypes.Point
                 gt = "Point"
@@ -961,14 +960,19 @@ class Digi():
                 if feat != 'type' and feat !='attr' and feat !='prefix' and feat != 'fields' and feat !='field_mapping':
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l][feat]["geom"])
+                    fet.setFields(fields)
                     #TODO handle extra fields 
                     
                     counter = 0
                     for f in fields:
                         n = f.name()
+                        print (n)
+
                         for fm in self.layers[l]['field_mapping']:
+                            print(fm)
                             if n == fm[0]:
-                                fet.setAttribute(counter,self.layers[l][feat][fm[1]])
+                                print(fields.indexOf(n),self.layers[l][feat][fm[1]])
+                                fet.setAttribute(fields.indexOf(n),self.layers[l][feat][fm[1]])
                             counter +=1
                         
                     
@@ -1127,7 +1131,7 @@ class Artist():
         if self.layer_def is None:
             self.layer_def = LoadDefs().styles[0]
             
-            print (type(self.layer_def))
+
 
     def order_layers(self, out_layers):
         draw_list = []
@@ -1139,7 +1143,8 @@ class Artist():
             if l in self.layer_def.keys():
                 draw_list.append((o,l,self.layer_def[l]["do"],self.layer_def[l]["style"]))
             else:
-                draw_list.append((o,l,self.layer_def[l]["FallBack"],self.layer_def["FallBack"]["style"]))
+                draw_list.append((o,l,self.layer_def["FallBack"]["do"],self.layer_def["FallBack"]["style"]))
+
             
         draw_list.sort(key=itemgetter(2))
             
