@@ -723,8 +723,10 @@ class Digi():
             attr = f["attr"]  
             label = f["label"]
             # Output constructed features
+            if not 'features' in self.layers[l].keys():
+                self.layers[l]['features']={}
             if not l == 'AllePunkter':
-                self.layers[l][feat]={"geom":geom,"attr":attr,"label":label}
+                self.layers[l]['features'][feat]={"geom":geom,"attr":attr,"label":label}
                 
                 #self.validator(l)
                 
@@ -749,14 +751,14 @@ class Digi():
                     
                     self.layers[l]['prefix']=''
                     
-                self.layers[l][feat]={"geom":geom,
-                                      "X":f['x'],
-                                      "Y":f['y'],
-                                      "Z":f['z'],
-                                      "PtID":f['punkt_id'],
-                                      "Type":f["type"],
-                                      "FeatID":f['Fid'],
-                                      "Attr":attr}
+                self.layers[l]['features'][feat]={"geom":geom,
+                                                  "X":f['x'],
+                                                  "Y":f['y'],
+                                                  "Z":f['z'],
+                                                  "PtID":f['punkt_id'],
+                                                  "Type":f["type"],
+                                                  "FeatID":f['Fid'],
+                                                  "Attr":attr}
         # Modify features if true
         if mod_feats is True:
             self.mod_features()    
@@ -783,9 +785,9 @@ class Digi():
         
         
         #iterate through features
-        for feat in self.layers[layer]:
-            if type(self.layers[layer][feat]) is dict:
-                l = self.layers[layer][feat]["label"]
+        for feat in self.layers[layer]['features']:
+            if type(self.layers[layer]['features'][feat]) is dict:
+                l = self.layers[layer]['features'][feat]["label"]
                 if len(l)>0:
                     if not l in label_feat:
                         label_feat[l]=[feat]
@@ -797,7 +799,7 @@ class Digi():
                     empties = True
                     
                 if not self.layers[layer]["type"] == 'point':
-                    errors = self.layers[feat]["geom"].validateGeometry(QgsGeometry.validateGeometryGeos)
+                    errors = self.layers['features'][feat]["geom"].validateGeometry(QgsGeometry.validateGeometryGeos)
                     if len(errors)>0:
                         geometry_errors[feat]=errors
                         g_error = True
@@ -807,6 +809,7 @@ class Digi():
             
             if not lname in self.layers.keys():
                 self.layers[lname]={}
+                self.layers[lname]['features']={}
                 self.layers[lname]['fields']=[QgsField("Duplicate_Nr", QVariant.String),
                                               QgsField("No_ID", QVariant.String),
                                               QgsField("Geometry_error", QVariant.String)]
@@ -815,28 +818,21 @@ class Digi():
                 for l in label_feat:
                     if len(label_feat[l])>1:
                         for feat in label_feat[l]:
-                            self.layers[lname][feat]=self.layers[layer][feat]
-                            self.layers[lname][feat]["Duplicate_Nr"] = 'Y'
-                            self.layers[lname][feat]['No_ID']=''
-                            self.layers[lname][feat]['Geometry_error']=''
+                            self.layers[lname]['features'][feat]=self.layers[layer][feat]
+                            self.layers[lname]['features'][feat]["Duplicate_Nr"] = 'Y'
+                            self.layers[lname]['features'][feat]['No_ID']=''
+                            self.layers[lname]['features'][feat]['Geometry_error']=''
             if empties is True:
                 for f in empties:
-                    if not f in self.layers[lname].keys():
-                        self.layers[lname][f]=self.layers[lname][f]
-                    self.layers[lname][f]['No_ID']='Y'
+                    if not f in self.layers[lname]['features'].keys():
+                        self.layers[lname]['features'][f]=self.layers[lname]['features'][f]
+                    self.layers[lname]['features'][f]['No_ID']='Y'
             if g_error is True:
                 for f in geometry_errors.keys():
-                    if not f in self.layers[lname].keys():
-                        self.layers[lname][f]=self.layers[lname][f]
-                    self.layers[lname][f]['Geometry_error']=' '.join(geometry_errors[f])
+                    if not f in self.layers[lname]['features'].keys():
+                        self.layers[lname]['features'][f]=self.layers[lname][f]
+                    self.layers[lname]['features'][f]['Geometry_error']=' '.join(geometry_errors[f])
                     
-            
-                    
-                    
-            #TODO fix how the attributes are handled in the feature constructor 
-                
-                
-        pass
     
     def validate_geometries(self):
         pass
@@ -848,9 +844,9 @@ class Digi():
             if self.layers[l]['type']=='upoly' or self.layers[l]['type']=='spoly':
                 # Get the target layer
                 target_key = l.split('_')[-1]
-                target = self.layers[target_key]
+                target = self.layers[target_key]['features']
                 # Use this layer as the modifer
-                source = self.layers[l]
+                source = self.layers[l]['features']
                 
                 # loop through features and perofm a pairwise comparison
                 for feat1 in target:
@@ -871,7 +867,7 @@ class Digi():
                                         pass
                         '''After we've checked all geometries add the modifed 
                         geometry back to the original feature'''
-                        self.layers[target_key][feat1]['geom']=f1_geom
+                        self.layers['features'][target_key][feat1]['geom']=f1_geom
                                            
     def feat_export(self, 
                     odir, 
@@ -917,153 +913,130 @@ class Digi():
         
         # Loop through layers
         for l in self.layers:
-            # Set filename
-            name = "%s_%s" %(self.fname,l)
-            #Set full output path
-            ofname = os.path.join(odir,name+dr_ext)
-            #Set up fields
-            fields = QgsFields()
-            
-            if 'fields' in self.layers[l]:
-                for field in self.layers[l]['fields']:
-                    if type(field) is QgsField:
-                        fields.append(field)
-                    else:
-                        fields.append(eval(field))
-                print (fields.names(),fields.indexOf('Kommentar'))
-            
-            # Set geometry type
-            print(l)
-            if self.layers[l]['type']=='point':
-                gt=QgsWkbTypes.Point
-                gt = "Point"
+            if 'features' in self.layers[l].keys():
+                # Set filename
+                name = "%s_%s" %(self.fname,l)
+                #Set full output path
+                ofname = os.path.join(odir,name+dr_ext)
+                #Set up fields
+                fields = QgsFields()
                 
-            elif self.layers[l]['type']=='pline':
-                gt=QgsWkbTypes.LineString
-                gt = "LineString"
-            elif self.layers[l]['type']== 'poly' or self.layers[l]['type']=='zpoly':
-                gt=QgsWkbTypes.Polygon
-                gt = "Polygon"
-            
-            '''Set coordiante system and geometry type as a string for the the 
-            memory layer constructor. This is silly, but it's how it works'''
-            gt = "%s?crs=%s" % (gt,srs.authid())  
-            
-            # Construct memory layer and add fields
-            tmp_layer = QgsVectorLayer(gt, l, "memory") 
-            pr = tmp_layer.dataProvider()
-            pr.addAttributes(fields)
-            tmp_layer.updateFields()
-            
-            # Add features to memory layer
-            for feat in self.layers[l].keys():
-                if feat != 'type' and feat !='attr' and feat !='prefix' and feat != 'fields' and feat !='field_mapping':
-                    fet = QgsFeature()
-                    fet.setGeometry(self.layers[l][feat]["geom"])
-                    fet.setFields(fields)
-                    #TODO handle extra fields 
+                if 'fields' in self.layers[l]:
+                    for field in self.layers[l]['fields']:
+                        if type(field) is QgsField:
+                            fields.append(field)
+                        else:
+                            fields.append(eval(field))
+                    print (fields.names(),fields.indexOf('Kommentar'))
+                
+                # Set geometry type
+                print(l)
+                if self.layers[l]['type']=='point':
+                    gt=QgsWkbTypes.Point
+                    gt = "Point"
                     
-                    counter = 0
+                elif self.layers[l]['type']=='pline':
+                    gt=QgsWkbTypes.LineString
+                    gt = "LineString"
+                elif self.layers[l]['type']== 'poly' or self.layers[l]['type']=='zpoly':
+                    gt=QgsWkbTypes.Polygon
+                    gt = "Polygon"
+                
+                '''Set coordiante system and geometry type as a string for the the 
+                memory layer constructor. This is silly, but it's how it works'''
+                gt = "%s?crs=%s" % (gt,srs.authid())  
+                
+                # Construct memory layer and add fields
+                tmp_layer = QgsVectorLayer(gt, l, "memory") 
+                pr = tmp_layer.dataProvider()
+                pr.addAttributes(fields)
+                tmp_layer.updateFields()
+                
+                # Add features to memory layer
+                for feat in self.layers[l]['features'].keys():
+                    fet = QgsFeature()
+                    fet.setGeometry(self.layers[l]['features'][feat]["geom"])
+                    fet.setFields(fields)
+                    
                     for f in fields:
                         n = f.name()
-                        print (n)
-
                         for fm in self.layers[l]['field_mapping']:
-                            print(fm)
                             if n == fm[0]:
-                                print(fields.indexOf(n),self.layers[l][feat][fm[1]])
-                                fet.setAttribute(fields.indexOf(n),self.layers[l][feat][fm[1]])
-                            counter +=1
-                        
-                    
-                    '''if all_points is False:
-                        fet.setAttributes([self.layers[l][feat]["label"], self.layers[l][feat]["attr"]])
-                    else:
-                        fet.setAttributes([self.layers[l][feat]["x"],
-                                           self.layers[l][feat]["y"],
-                                           self.layers[l][feat]["z"],
-                                           self.layers[l][feat]["punkt_id"],
-                                           self.layers[l][feat]["Type"],
-                                           self.layers[l][feat]["Fid"],
-                                           self.layers[l][feat]["attr"]])'''
+                                fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])
+
                     pr.addFeatures([fet])
                     tmp_layer.updateExtents()
 
-            # Set transform context for output layer
-            transform_context = QgsProject.instance().transformContext()
-            #Instantiate a fiel writer class with attributes
-            save_options = QgsVectorFileWriter.SaveVectorOptions()
-            # Set driver
-            save_options.driverName = dr_n
-            # Set encoding
-            save_options.fileEncoding = "UTF-8"
-            # Allow overwrite
-            save_options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
-            
-            if tab is True:
-                '''Need to set bounds for MapInfo files. Buffers by 500m to 
-                avoid any potential rounding errors or issues with modifiying
-                the layers later'''
-                ext=tmp_layer.extent()
+                # Set transform context for output layer
+                transform_context = QgsProject.instance().transformContext()
+                #Instantiate a fiel writer class with attributes
+                save_options = QgsVectorFileWriter.SaveVectorOptions()
+                # Set driver
+                save_options.driverName = dr_n
+                # Set encoding
+                save_options.fileEncoding = "UTF-8"
+                # Allow overwrite
+                save_options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+                
+                if tab is True:
+                    '''Need to set bounds for MapInfo files. Buffers by 500m to 
+                    avoid any potential rounding errors or issues with modifiying
+                    the layers later'''
+                    ext=tmp_layer.extent()
+                   
+                    xmax = ext.xMaximum()
+                    ymax = ext.yMaximum()
+                    xmin = ext.xMinimum()
+                    ymin = ext.yMinimum()
+                    
+                    save_options.layerOptions = ['BOUNDS=%s,%s,%s,%s' %(xmin,ymin,xmax,ymax)]
+                
+                # Get Qgis Version
+                q_version =int(Qgis.QGIS_VERSION.split('.')[1])
+                
+                #Export layers
+                ''' Intention here is to use the QGIS version to set the behaviour 
+                depending on how the version of Qgis handles file output, as early
+                testing indicated incomaptiblity with version 3.10. However- seem to 
+                fine with 3.10.3.
+                
+                2021-10-05
+                Amended as writeAsVectorFormatV2 is apparently also now deprecated
+                
                 '''
-                xmax = int(ext.xMaximum()+500)
-                ymax = int(ext.yMaximum()+500)
-                xmin = int(ext.xMinimum()-500)
-                ymin = int(ext.yMinimum()-500)
-                '''
-                xmax = ext.xMaximum()
-                ymax = ext.yMaximum()
-                xmin = ext.xMinimum()
-                ymin = ext.yMinimum()
                 
-                save_options.layerOptions = ['BOUNDS=%s,%s,%s,%s' %(xmin,ymin,xmax,ymax)]
-            
-            # Get Qgis Version
-            q_version =int(Qgis.QGIS_VERSION.split('.')[1])
-            
-            #Export layers
-            ''' Intention here is to use the QGIS version to set the behaviour 
-            depending on how the version of Qgis handles file output, as early
-            testing indicated incomaptiblity with version 3.10. However- seem to 
-            fine with 3.10.3.
-            
-            2021-10-05
-            Amended as writeAsVectorFormatV2 is apparently also now deprecated
-            
-            '''
-            
-            if q_version >= 20:
-                error = QgsVectorFileWriter.writeAsVectorFormatV3(tmp_layer,
-                                                                   ofname,
-                                                                   transform_context,
-                                                                   save_options)
+                if q_version >= 20:
+                    error = QgsVectorFileWriter.writeAsVectorFormatV3(tmp_layer,
+                                                                       ofname,
+                                                                       transform_context,
+                                                                       save_options)
+                    
+                elif q_version >= 12:
+                    error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
+                                                                       ofname,
+                                                                       transform_context,
+                                                                       save_options)  
+                    
+                else:
+                    print ('OLD METHOD!')
+                    error = QgsVectorFileWriter.writeAsVectorFormat(layer=tmp_layer,
+                                                                    fileName=ofname,
+                                                                    options=save_options)
+                                                                      
+                            
+                if error[0] == QgsVectorFileWriter.NoError:
+                    print("success!")
+                else:
+                    print(error)
+                 
+                # Tidy up cos we cant trust GC
+                del error
+                del tmp_layer
                 
-            elif q_version >= 12:
-                error = QgsVectorFileWriter.writeAsVectorFormatV2(tmp_layer,
-                                                                   ofname,
-                                                                   transform_context,
-                                                                   save_options)  
+                # Append to list of output files
+                if not self.layers[l]['type']== 'upoly' or self.layers[l]['type']=='spoly':
+                    o_list.append([ofname,l])
                 
-            else:
-                print ('OLD METHOD!')
-                error = QgsVectorFileWriter.writeAsVectorFormat(layer=tmp_layer,
-                                                                fileName=ofname,
-                                                                options=save_options)
-                                                                  
-                        
-            if error[0] == QgsVectorFileWriter.NoError:
-                print("success!")
-            else:
-                print(error)
-             
-            # Tidy up cos we cant trust GC
-            del error
-            del tmp_layer
-            
-            # Append to list of output files
-            if not self.layers[l]['type']== 'upoly' or self.layers[l]['type']=='spoly':
-                o_list.append([ofname,l])
-            
         return o_list       
         
     #******************** GENERIC METHODS *************************************
