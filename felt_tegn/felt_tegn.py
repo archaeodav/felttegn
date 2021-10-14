@@ -728,7 +728,7 @@ class Digi():
             if not l == 'AllePunkter':
                 self.layers[l]['features'][feat]={"geom":geom,"attr":attr,"label":label}
                 
-                #self.validator(l)
+                self.validator(l)
                 
             # Output all points
             else:
@@ -785,54 +785,112 @@ class Digi():
         
         
         #iterate through features
+        
         for feat in self.layers[layer]['features']:
-            if type(self.layers[layer]['features'][feat]) is dict:
-                l = self.layers[layer]['features'][feat]["label"]
-                if len(l)>0:
-                    if not l in label_feat:
-                        label_feat[l]=[feat]
-                    else:
-                        label_feat[l].append(feat)
-                        dupes = True
-                else: 
-                    empty.append(feat)
-                    empties = True
-                    
-                if not self.layers[layer]["type"] == 'point':
-                    errors = self.layers['features'][feat]["geom"].validateGeometry(QgsGeometry.validateGeometryGeos)
-                    if len(errors)>0:
-                        geometry_errors[feat]=errors
-                        g_error = True
-                    
+            if len(self.layers[layer]['features'][feat]) > 0:
+                #print ('*** FEATURE ***\n',self.layers[layer]['features'][feat].keys())
+                if type(self.layers[layer]['features'][feat]) is dict:
+                    if 'label' in self.layers[layer]['features'][feat]:
+                        l = self.layers[layer]['features'][feat]["label"]
+                        if l is not None and len(l)>0:
+                            if not l in label_feat:
+                                label_feat[l]=[feat]
+                            else:
+                                label_feat[l].append(feat)
+                                dupes = True
+                        else: 
+                            empty.append(feat)
+                            empties = True
+                     
+                    else: 
+                        empty.append(feat)
+                        empties = True
+                        
+                        
+                    if not self.layers[layer]["type"] == 'point':
+                        #print (self.layers[layer]['features'][feat])
+                        errors = self.layers[layer]['features'][feat]["geom"].validateGeometry()
+                        if len(errors)>0:
+                            geometry_errors[feat]=errors
+                            g_error = True
+                        
         if dupes is True or empties is True or g_error is True:
             lname = '%s_%s' %('FEJL',layer)
+            
+            #print (lname)
+            
+            #print (self.layers[layer])
             
             if not lname in self.layers.keys():
                 self.layers[lname]={}
                 self.layers[lname]['features']={}
-                self.layers[lname]['fields']=[QgsField("Duplicate_Nr", QVariant.String),
-                                              QgsField("No_ID", QVariant.String),
-                                              QgsField("Geometry_error", QVariant.String)]
+                self.layers[lname]['fields'] = self.layers[layer]['fields'].copy()+['QgsField("Duplicate_Nr", QVariant.String)',
+                                                                             'QgsField("No_ID", QVariant.String)',
+                                                                             'QgsField("Geometry_error", QVariant.String)']
+                self.layers[lname]['field_mapping']= self.layers[layer]['field_mapping'].copy()+[['Duplicate_Nr','Duplicate_Nr'],
+                                                                                                 ['No_ID','No_ID'],
+                                                                                                 ['Geometry_error','Geometry_error']]
+                
+                self.layers[lname]['type']=self.layers[layer]['type']
+                self.layers[lname]['prefix']=self.layers[layer]['prefix']
                 
             if dupes is True:
+                #print (label_feat)
                 for l in label_feat:
                     if len(label_feat[l])>1:
-                        for feat in label_feat[l]:
-                            self.layers[lname]['features'][feat]=self.layers[layer][feat]
-                            self.layers[lname]['features'][feat]["Duplicate_Nr"] = 'Y'
-                            self.layers[lname]['features'][feat]['No_ID']=''
-                            self.layers[lname]['features'][feat]['Geometry_error']=''
+                        #print(label_feat[l])
+                        for f in label_feat[l]:
+                            #print (self.layers[lname]['features'].keys())
+                            if not f in self.layers[lname]['features'].keys():
+                                self.layers[lname]['features'][f]={}
+                                self.layers[lname]['features'][f]['geom']=self.layers[layer]['features'][f]['geom']
+                                self.layers[lname]['features'][f]['attr']=self.layers[layer]['features'][f]['attr']
+                                self.layers[lname]['features'][f]['label']=self.layers[layer]['features'][f]['label']
+
+                            self.layers[lname]['features'][f]["Duplicate_Nr"] = 'Y'
+                            
+                            if not 'No_ID' in self.layers[lname]['features'][f].keys():
+                                self.layers[lname]['features'][f]['No_ID']=''
+                            if not 'Geometry_error' in self.layers[lname]['features'][f].keys():    
+                                self.layers[lname]['features'][f]['Geometry_error']=''
+                            print (self.layers[lname]['features'])
+            
             if empties is True:
-                for f in empties:
-                    if not f in self.layers[lname]['features'].keys():
-                        self.layers[lname]['features'][f]=self.layers[lname]['features'][f]
-                    self.layers[lname]['features'][f]['No_ID']='Y'
+                #print (empty)
+                for f in empty:
+                    if not f is None:
+                        if not f in self.layers[lname]['features'].keys():
+                            self.layers[lname]['features'][f]={}
+                            self.layers[lname]['features'][f]['geom']=self.layers[layer]['features'][f]['geom']
+                            self.layers[lname]['features'][f]['attr']=self.layers[layer]['features'][f]['attr']
+                            self.layers[lname]['features'][f]['label']=self.layers[layer]['features'][f]['label']
+                        
+                        self.layers[lname]['features'][f]['No_ID']='Y'
+                        
+                        if not 'Duplicate_Nr' in self.layers[lname]['features'][f].keys():
+                            self.layers[lname]['features'][f]['Duplicate_Nr']=''
+                        if not 'Geometry_error' in self.layers[lname]['features'][f].keys():    
+                            self.layers[lname]['features'][f]['Geometry_error']=''
+                            
             if g_error is True:
-                for f in geometry_errors.keys():
-                    if not f in self.layers[lname]['features'].keys():
-                        self.layers[lname]['features'][f]=self.layers[lname][f]
-                    self.layers[lname]['features'][f]['Geometry_error']=' '.join(geometry_errors[f])
-                    
+                if len(geometry_errors)>0:
+                    for f in geometry_errors.keys():
+                        if not f in self.layers[lname]['features'].keys():
+                            self.layers[lname]['features'][f]={}
+                            self.layers[lname]['features'][f]['geom']=self.layers[layer]['features'][f]['geom']
+                            self.layers[lname]['features'][f]['attr']=self.layers[layer]['features'][f]['attr']
+                            self.layers[lname]['features'][f]['label']=self.layers[layer]['features'][f]['label']
+    
+                        e = []
+                        for g in geometry_errors[f]:
+                            e.append(str(g))
+                        self.layers[lname]['features'][f]['Geometry_error']=' '.join(e)
+                        
+                        if not 'Duplicate_Nr' in self.layers[lname]['features'][f].keys():
+                            self.layers[lname]['features'][f]['Duplicate_Nr']=''
+                        if not 'No_ID' in self.layers[lname]['features'][f].keys():    
+                            self.layers[lname]['features'][f]['No_ID']=''
+                        
     
     def validate_geometries(self):
         pass
@@ -927,10 +985,10 @@ class Digi():
                             fields.append(field)
                         else:
                             fields.append(eval(field))
-                    print (fields.names(),fields.indexOf('Kommentar'))
+                #print (fields.names())
                 
                 # Set geometry type
-                print(l)
+                #print(l)
                 if self.layers[l]['type']=='point':
                     gt=QgsWkbTypes.Point
                     gt = "Point"
@@ -952,9 +1010,14 @@ class Digi():
                 pr.addAttributes(fields)
                 tmp_layer.updateFields()
                 
+                #print (self.layers[l])
+                
+                #print (l,self.layers[l])
+                
                 # Add features to memory layer
                 for feat in self.layers[l]['features'].keys():
                     fet = QgsFeature()
+                    #print (feat,fet.attributes())
                     fet.setGeometry(self.layers[l]['features'][feat]["geom"])
                     fet.setFields(fields)
                     
@@ -962,6 +1025,8 @@ class Digi():
                         n = f.name()
                         for fm in self.layers[l]['field_mapping']:
                             if n == fm[0]:
+                                #print (l, fields.indexOf(n),n)
+                                #print (self.layers[l]['features'][feat])
                                 fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])
 
                     pr.addFeatures([fet])
@@ -1118,7 +1183,6 @@ class Artist():
             else:
                 draw_list.append((o,l,self.layer_def["FallBack"]["do"],self.layer_def["FallBack"]["style"]))
 
-            
         draw_list.sort(key=itemgetter(2))
             
         return draw_list
