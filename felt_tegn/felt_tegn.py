@@ -230,7 +230,7 @@ class FeltTegn:
         proj.setCrs(QgsCoordinateReferenceSystem("EPSG:25832"))
         
         self.dlg.hvonaar.setDateTime(QDateTime.currentDateTime())
-        
+        who = self.dlg.hvem
         
         # show the dialog
         self.dlg.show()
@@ -247,12 +247,8 @@ class FeltTegn:
             tab = self.dlg.radioButton_tab.isChecked()
             gp = self.dlg.radioButton_gp.isChecked()
             gjson = self.dlg.radioButton_gjson.isChecked()
-            who = self.dlg.hvem.text()
-            when = self.dlg.hvonaar.date()
-            
-            print (who)
-            print (when)
-
+            whom = who.text()
+            when = self.dlg.hvonaar.date().toString('yyyy-M-dd')
             
             # File creation options...
             #Add files to map
@@ -270,7 +266,9 @@ class FeltTegn:
                 
                 # Export the features
                 out_layers = digit.feat_export(odir.filePath(),
-                                               srs=proj.crs(),
+                                               proj.crs(),
+                                               whom,
+                                               when,
                                                shp=shp,
                                                tab=tab,
                                                gp=gp,
@@ -931,10 +929,14 @@ class Digi():
     def feat_export(self, 
                     odir, 
                     srs, 
+                    who,
+                    when,
                     shp=True,
                     tab=False,
                     gp=False,
-                    gjson=False):
+                    gjson=False,
+                    who_field = 'Opmåler',
+                    when_field = 'Dato'):
         ''' Method to export features to different file formats'''
         
         # Driver name        
@@ -986,6 +988,9 @@ class Digi():
                             fields.append(field)
                         else:
                             fields.append(eval(field))
+                            
+                fields.append(QgsField(who_field, QVariant.String))
+                fields.append(QgsField(when_field, QVariant.String))
                 
                 # Set geometry type
                 if self.layers[l]['type']=='point':
@@ -1020,6 +1025,8 @@ class Digi():
                         for fm in self.layers[l]['field_mapping']:
                             if n == fm[0]:
                                 fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])
+                    fet.setAttribute(fields.indexOf(who_field),who)
+                    fet.setAttribute(fields.indexOf(when_field),when)
 
                     pr.addFeatures([fet])
                     tmp_layer.updateExtents()
