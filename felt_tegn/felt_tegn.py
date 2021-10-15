@@ -21,7 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QDateTime
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtCore import QVariant
@@ -229,11 +229,16 @@ class FeltTegn:
         proj = self.dlg.mQgsProjectionSelectionWidget
         proj.setCrs(QgsCoordinateReferenceSystem("EPSG:25832"))
         
+        self.dlg.hvonaar.setDateTime(QDateTime.currentDateTime())
+        
+        
         # show the dialog
         self.dlg.show()
         
         # Run the dialog event loop
         result = self.dlg.exec_()
+        
+        
        
         # See if OK was pressed
         if result:
@@ -242,6 +247,12 @@ class FeltTegn:
             tab = self.dlg.radioButton_tab.isChecked()
             gp = self.dlg.radioButton_gp.isChecked()
             gjson = self.dlg.radioButton_gjson.isChecked()
+            who = self.dlg.hvem.text()
+            when = self.dlg.hvonaar.date()
+            
+            print (who)
+            print (when)
+
             
             # File creation options...
             #Add files to map
@@ -788,7 +799,6 @@ class Digi():
         
         for feat in self.layers[layer]['features']:
             if len(self.layers[layer]['features'][feat]) > 0:
-                #print ('*** FEATURE ***\n',self.layers[layer]['features'][feat].keys())
                 if type(self.layers[layer]['features'][feat]) is dict:
                     if 'label' in self.layers[layer]['features'][feat]:
                         l = self.layers[layer]['features'][feat]["label"]
@@ -808,7 +818,6 @@ class Digi():
                         
                         
                     if not self.layers[layer]["type"] == 'point':
-                        #print (self.layers[layer]['features'][feat])
                         errors = self.layers[layer]['features'][feat]["geom"].validateGeometry()
                         if len(errors)>0:
                             geometry_errors[feat]=errors
@@ -816,10 +825,6 @@ class Digi():
                         
         if dupes is True or empties is True or g_error is True:
             lname = '%s_%s' %('FEJL',layer)
-            
-            #print (lname)
-            
-            #print (self.layers[layer])
             
             if not lname in self.layers.keys():
                 self.layers[lname]={}
@@ -835,12 +840,9 @@ class Digi():
                 self.layers[lname]['prefix']=self.layers[layer]['prefix']
                 
             if dupes is True:
-                #print (label_feat)
                 for l in label_feat:
                     if len(label_feat[l])>1:
-                        #print(label_feat[l])
                         for f in label_feat[l]:
-                            #print (self.layers[lname]['features'].keys())
                             if not f in self.layers[lname]['features'].keys():
                                 self.layers[lname]['features'][f]={}
                                 self.layers[lname]['features'][f]['geom']=self.layers[layer]['features'][f]['geom']
@@ -853,10 +855,9 @@ class Digi():
                                 self.layers[lname]['features'][f]['No_ID']=''
                             if not 'Geometry_error' in self.layers[lname]['features'][f].keys():    
                                 self.layers[lname]['features'][f]['Geometry_error']=''
-                            print (self.layers[lname]['features'])
+                            
             
             if empties is True:
-                #print (empty)
                 for f in empty:
                     if not f is None:
                         if not f in self.layers[lname]['features'].keys():
@@ -985,10 +986,8 @@ class Digi():
                             fields.append(field)
                         else:
                             fields.append(eval(field))
-                #print (fields.names())
                 
                 # Set geometry type
-                #print(l)
                 if self.layers[l]['type']=='point':
                     gt=QgsWkbTypes.Point
                     gt = "Point"
@@ -1010,14 +1009,9 @@ class Digi():
                 pr.addAttributes(fields)
                 tmp_layer.updateFields()
                 
-                #print (self.layers[l])
-                
-                #print (l,self.layers[l])
-                
                 # Add features to memory layer
                 for feat in self.layers[l]['features'].keys():
                     fet = QgsFeature()
-                    #print (feat,fet.attributes())
                     fet.setGeometry(self.layers[l]['features'][feat]["geom"])
                     fet.setFields(fields)
                     
@@ -1025,8 +1019,6 @@ class Digi():
                         n = f.name()
                         for fm in self.layers[l]['field_mapping']:
                             if n == fm[0]:
-                                #print (l, fields.indexOf(n),n)
-                                #print (self.layers[l]['features'][feat])
                                 fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])
 
                     pr.addFeatures([fet])

@@ -29,7 +29,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QgsFileWidget" name="inputTextFile" native="true">
+  <widget class="QgsFileWidget" name="inputTextFile">
    <property name="geometry">
     <rect>
      <x>180</x>
@@ -52,7 +52,7 @@
     <string>Input-fil</string>
    </property>
   </widget>
-  <widget class="QgsProjectionSelectionWidget" name="mQgsProjectionSelectionWidget" native="true">
+  <widget class="QgsProjectionSelectionWidget" name="mQgsProjectionSelectionWidget">
    <property name="geometry">
     <rect>
      <x>180</x>
@@ -75,7 +75,7 @@
     <string>Koordinatsystem</string>
    </property>
   </widget>
-  <widget class="QgsFileWidget" name="outputTargetDir" native="true">
+  <widget class="QgsFileWidget" name="outputTargetDir">
    <property name="geometry">
     <rect>
      <x>180</x>
@@ -102,7 +102,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>170</y>
+     <y>200</y>
      <width>481</width>
      <height>211</height>
     </rect>
@@ -219,6 +219,52 @@
    </property>
    <property name="text">
     <string>FeltTegn</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="hvem">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>160</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDateEdit" name="hvonaar">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>160</y>
+     <width>110</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>160</y>
+     <width>81</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Opmålt af</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>160</y>
+     <width>47</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Dato</string>
    </property>
   </widget>
  </widget>
