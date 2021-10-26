@@ -37,6 +37,7 @@ import os
 import csv
 from operator import itemgetter
 import json
+import time
 
 from qgis.core import (
   QgsFields,
@@ -890,10 +891,6 @@ class Digi():
                         if not 'No_ID' in self.layers[lname]['features'][f].keys():    
                             self.layers[lname]['features'][f]['No_ID']=''
                         
-    
-    def validate_geometries(self):
-        pass
-    
             
     def mod_features(self):
         # Method for modifiying features based on intersecting geometries
@@ -1059,6 +1056,19 @@ class Digi():
                 q_version =int(Qgis.QGIS_VERSION.split('.')[1])
                 
                 #Export layers
+                ''' check to see if layer i already loaded and if so remove from
+                canvas- for some reason the newer version won't overwrite a file already
+                loaded in the canvas (though it will happily do it in the filesystem'''
+                
+                for lyr in QgsProject.instance().mapLayers().values():
+                    if lyr.name()==name:
+                        QgsProject.instance().removeMapLayers([lyr.id()])
+                        QgsProject.instance().reloadAllLayers()
+                QgsProject.instance().reloadAllLayers()
+
+                        
+                        
+                
                 ''' Intention here is to use the QGIS version to set the behaviour 
                 depending on how the version of Qgis handles file output, as early
                 testing indicated incomaptiblity with version 3.10. However- seem to 
