@@ -16,5 +16,5 @@ Please report issues on GitHub rather than by email. It's also very helpful if y
 We're testing on Qgis 3.10 and later. It works on earlier versions, but there may be some errors / unexpected behaviours
 
 ## Known issues:
- - Error reporting is a work in progress. Currently no 'Fejl' layer is produced.
+ - Sometimes (on windows) the plugin won't overwrite a file of the same name if it's loaded in QGIS. This is apparently a quirk of the underlying OSGEO library
  
