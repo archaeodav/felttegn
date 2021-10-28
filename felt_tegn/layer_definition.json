@@ -128,7 +128,7 @@
             "Anlæg": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -137,7 +137,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "A",
@@ -146,7 +146,7 @@
             "Fejl": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -155,7 +155,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -164,7 +164,7 @@
             "Felt": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -173,7 +173,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"note\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -182,7 +182,7 @@
             "Fund": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -191,7 +191,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "X",
@@ -200,7 +200,7 @@
             "Kote": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -209,7 +209,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -218,7 +218,7 @@
             "Lag": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -227,7 +227,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -236,7 +236,7 @@
             "Målepunkter": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -245,7 +245,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -254,7 +254,7 @@
             "NIVEAU": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -263,7 +263,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -272,7 +272,7 @@
             "Profil": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -281,7 +281,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Note\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -290,7 +290,7 @@
             "Prøver": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -299,7 +299,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "P",
@@ -308,7 +308,7 @@
             "Snit": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -317,7 +317,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -326,7 +326,7 @@
             "Sten": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -335,7 +335,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -344,7 +344,7 @@
             "U_Felt": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -353,7 +353,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
@@ -362,7 +362,7 @@
             "Vand": {
                 "field_mapping": [
                     [
-                        "Avngivelse",
+                        "Angivelse",
                         "label"
                     ],
                     [
@@ -371,7 +371,7 @@
                     ]
                 ],
                 "fields": [
-                    "QgsField(\"Avngivelse\", QVariant.String)",
+                    "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
