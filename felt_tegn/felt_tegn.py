@@ -250,6 +250,8 @@ class FeltTegn:
             gjson = self.dlg.radioButton_gjson.isChecked()
             whom = who.text()
             when = self.dlg.hvonaar.date().toString('yyyy-M-dd')
+            gps = tab = self.dlg.GPS_radioButton.isChecked()
+            tps = tab = self.dlg.TPS_radioButton.isChecked()
             
             # File creation options...
             #Add files to map
@@ -270,6 +272,8 @@ class FeltTegn:
                                                proj.crs(),
                                                whom,
                                                when,
+                                               gps,
+                                               tps,
                                                shp=shp,
                                                tab=tab,
                                                gp=gp,
@@ -698,6 +702,8 @@ class Digi():
             # empty geometry
             geom = None
             
+            geom_fejl = False
+            
             # Pass point arrays to constructor methods depending on geometry type
             # deal with polygons
             if tp == "poly":
@@ -707,6 +713,8 @@ class Digi():
                     geom = self.twopointpoly(pts)
                 else:
                     geom = self.onepointfejlpoly(pts)
+                    geom_fejl = True
+                    
                     pass
             # deal with zig-zag polys
             elif tp == "zpoly":
@@ -736,7 +744,10 @@ class Digi():
             if not 'features' in self.layers[l].keys():
                 self.layers[l]['features']={}
             if not l == 'AllePunkter':
-                self.layers[l]['features'][feat]={"geom":geom,"attr":attr,"label":label}
+                self.layers[l]['features'][feat]={"geom":geom,
+                                                  "attr":attr,
+                                                  "label":label,
+                                                  'gf':geom_fejl}
                 
                 self.validator(l)
                 
@@ -820,7 +831,9 @@ class Digi():
                     if not self.layers[layer]["type"] == 'point':
                         errors = self.layers[layer]['features'][feat]["geom"].validateGeometry()
                       
-                            
+                        if self.layers[layer]['features'][feat]['gf'] is True:
+                            errors.append('Polygon has only one point')                                
+                      
                         if len(errors)>0:
                             geometry_errors[feat]=errors
                             g_error = True
@@ -931,12 +944,15 @@ class Digi():
                     srs, 
                     who,
                     when,
+                    gps,
+                    tps,
                     shp=True,
                     tab=False,
                     gp=False,
                     gjson=False,
                     who_field = 'Opmåler',
-                    when_field = 'Dato'):
+                    when_field = 'Dato',
+                    method_field = 'Metode'):
         ''' Method to export features to different file formats'''
         
         # Driver name        
@@ -991,6 +1007,7 @@ class Digi():
                             
                 fields.append(QgsField(who_field, QVariant.String))
                 fields.append(QgsField(when_field, QVariant.String))
+                fields.append(QgsField(method_field, QVariant.String))
                 
                 # Set geometry type
                 if self.layers[l]['type']=='point':
@@ -1027,6 +1044,11 @@ class Digi():
                                 fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])
                     fet.setAttribute(fields.indexOf(who_field),who)
                     fet.setAttribute(fields.indexOf(when_field),when)
+                    
+                    if gps is True:
+                        fet.setAttribute(fields.indexOf(method_field),'GPS')
+                    else:
+                        fet.setAttribute(fields.indexOf(method_field),'TPS')
 
                     pr.addFeatures([fet])
                     tmp_layer.updateExtents()
