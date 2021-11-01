@@ -706,7 +706,7 @@ class Digi():
                 elif len(pts)==2:
                     geom = self.twopointpoly(pts)
                 else:
-                    #todo handle error nicely
+                    geom = self.onepointfejlpoly(pts)
                     pass
             # deal with zig-zag polys
             elif tp == "zpoly":
@@ -797,6 +797,7 @@ class Digi():
         #iterate through features
         
         for feat in self.layers[layer]['features']:
+            #if 'geom' in self.layers[layer]['features'].keys():
             if len(self.layers[layer]['features'][feat]) > 0:
                 if type(self.layers[layer]['features'][feat]) is dict:
                     if 'label' in self.layers[layer]['features'][feat]:
@@ -818,6 +819,8 @@ class Digi():
                         
                     if not self.layers[layer]["type"] == 'point':
                         errors = self.layers[layer]['features'][feat]["geom"].validateGeometry()
+                      
+                            
                         if len(errors)>0:
                             geometry_errors[feat]=errors
                             g_error = True
@@ -1166,6 +1169,11 @@ class Digi():
         poly = c.buffer(d,25)
         
         return poly
+    
+    def onepointfejlpoly(self,point):
+         poly = QgsGeometry.fromPointXY(point[0]).buffer(0.25,25)
+         
+         return poly
     
 class Artist():
     ''' Class orders layers and sets up symbology before we add them to the map canvas.'''
