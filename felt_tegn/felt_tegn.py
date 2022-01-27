@@ -233,6 +233,16 @@ class FeltTegn:
         self.dlg.hvonaar.setDateTime(QDateTime.currentDateTime())
         who = self.dlg.hvem
         
+        mus_list = ['Auto',
+                    'FHM',
+                    'HOM',
+                    'VKH']
+        
+        
+        
+        mus = self.dlg.museumBox
+        mus.addItems(mus_list)
+        
         # show the dialog
         self.dlg.show()
         
@@ -252,6 +262,7 @@ class FeltTegn:
             when = self.dlg.hvonaar.date().toString('yyyy-M-dd')
             gps = tab = self.dlg.GPS_radioButton.isChecked()
             tps = tab = self.dlg.TPS_radioButton.isChecked()
+            mus_code = mus.currentText()
             
             # File creation options...
             #Add files to map
@@ -265,7 +276,7 @@ class FeltTegn:
             
             for i in ifile:
                 # Instantiate Digi class
-                digit = Digi([i],kote_file=kote_file)
+                digit = Digi([i],kote_file=kote_file,mus_code=mus_code)
                 
                 # Export the features
                 out_layers = digit.feat_export(odir.filePath(),
@@ -340,7 +351,10 @@ class LoadDefs():
             with open(codefile, 'r') as ifile:
                 d = json.load(ifile)
                 
-        self.codes=d[museum_code]['codes']
+                
+        
+                
+        self.codes=d['default']['codes']
         """Codes.these are deifned as a dict with the following attributes:
              key - text string identifying code
              ...sub dict keys... 
@@ -363,7 +377,7 @@ class LoadDefs():
                  2nd pass- all the normal stuff
             """
         
-        self.layers = d[museum_code]['layers']
+        self.layers = d['default']['layers']
         '''Layers. Defined as a dict with the following attributes:
             key - layer name
             ... sub dict keys...
@@ -377,12 +391,25 @@ class LoadDefs():
                               
         '''
         
-        self.styles = d[museum_code]['styles']
+        self.styles = d['default']['styles']
         ''' Styles- how woe draw the Layers dict:
             - key : Layer name
             - do : drawing order. Int, Used to control how 
             - style : properties used for qgis renederer
             . '''
+            
+            
+        '''This bit overwrites the default codes with museum specific stuff,
+        using the 3 charachter museum abreviation code- e.g. FHM, VKH, HOM or 
+        other string used to define a new set of impports in the GUI'''
+        
+        #TODO- set museum code from UI- or from import filemname???
+        
+        if museum_code != 'default':
+            for code in d[museum_code]['codes']:
+                self.codes[code]=d[museum_code]['codes'][code]
+            for layer in d[museum_code]['layers']:
+                self.layers[layer]=d[museum_code]['layers'][layer]
             
 class LoadData():
     """ Class to load data from a csv file"""
@@ -634,6 +661,7 @@ class Digi():
     
     def __init__(self, 
                  infiles, #list of csv files to load
+                 mus_code = 'default',
                  split_files=True, #convert as seperate files or homogenise
                  case_delimiter = '_', # delimiter used in case- eg FHM12345_blah.csv
                  kote_file = False):
@@ -654,7 +682,7 @@ class Digi():
         if split_files is True:
             # Loop through and load files
             for f in infiles:
-                indata = LoadData()
+                indata = LoadData(museum_code = mus_code)
                 indata.parsefile(f, kote_file=kote_file)
                 self.layers = indata.layers
                 
