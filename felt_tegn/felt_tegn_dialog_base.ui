@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>597</width>
-    <height>666</height>
+    <width>603</width>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -246,7 +246,7 @@
      <string notr="true">yyyy-MM-dd</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_6">
+   <widget class="QLabel" name="dato">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -259,7 +259,7 @@
      <string>Dato</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="hvemlabel">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -309,6 +309,29 @@
     </property>
     <property name="text">
      <string>Total stations opmåling</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>348</x>
+      <y>70</y>
+      <width>111</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="museum">
+    <property name="geometry">
+     <rect>
+      <x>295</x>
+      <y>74</y>
+      <width>47</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Museum</string>
     </property>
    </widget>
   </widget>
