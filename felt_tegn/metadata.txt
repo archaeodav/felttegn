@@ -6,7 +6,7 @@
 name=FeltTegn
 qgisMinimumVersion=3.0
 description=Processes archaeological survey data for Danish Museums
-version=1.01
+version=1.2
 author=David Stott
 email=ds@moesgaardmuseum.dk
 
