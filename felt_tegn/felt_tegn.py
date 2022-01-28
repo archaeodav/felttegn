@@ -238,9 +238,7 @@ class FeltTegn:
                     'HOM',
                     'VKH']
         
-        
-        
-        mus = self.dlg.museumBox
+        mus = self.dlg.comboBox
         mus.addItems(mus_list)
         
         # show the dialog
@@ -333,6 +331,7 @@ class FeltTegn:
 class LoadDefs():
     def __init__(self,
                  codefile = None,
+                 fname = None
                  museum_code = 'default'):
         
         self.codes = None
@@ -404,6 +403,8 @@ class LoadDefs():
         other string used to define a new set of impports in the GUI'''
         
         #TODO- set museum code from UI- or from import filemname???
+        if museum_code == 'Auto':
+            museum_code = 
         
         if museum_code != 'default':
             for code in d[museum_code]['codes']:
@@ -682,7 +683,7 @@ class Digi():
         if split_files is True:
             # Loop through and load files
             for f in infiles:
-                indata = LoadData(museum_code = mus_code)
+                indata = LoadData(museum_code=mus_code, fname=os.path.split(f)[-1])
                 indata.parsefile(f, kote_file=kote_file)
                 self.layers = indata.layers
                 
