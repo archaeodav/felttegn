@@ -258,8 +258,8 @@ class FeltTegn:
             gjson = self.dlg.radioButton_gjson.isChecked()
             whom = who.text()
             when = self.dlg.hvonaar.date().toString('yyyy-M-dd')
-            gps = tab = self.dlg.GPS_radioButton.isChecked()
-            tps = tab = self.dlg.TPS_radioButton.isChecked()
+            gps  = self.dlg.GPS_radioButton.isChecked()
+            tps  = self.dlg.TPS_radioButton.isChecked()
             mus_code = mus.currentText()
             
             # File creation options...
@@ -302,27 +302,28 @@ class FeltTegn:
                         QgsProject.instance().addMapLayer(ol)
                         
                         #Append properties to renderer
-                        props = ol.renderer().symbol().symbolLayer(0).properties()
-                        
-                        for key in l[3]:
-                            props[key] = l[3][key]
-                        
-                        #Set symbol type & properties depending on geometry
-                        geom_type = QgsWkbTypes.displayString(ol.wkbType())
-                        
-                        if geom_type == 'Polygon' or geom_type == 'MultiPolygon':
-                            ol.renderer().setSymbol(QgsFillSymbol.createSimple(props))
-                        elif geom_type == 'LineString' or geom_type == 'MultiLineString':
-                            ol.renderer().setSymbol(QgsLineSymbol.createSimple(props))
-                        elif geom_type == 'Point' or geom_type == 'MultiPoint':
-                            ol.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
-                        else:
-                            pass
-                        #redraw layer
-                        ol.triggerRepaint()
-                        #refresh legend
-                        node = QgsProject.instance().layerTreeRoot().findLayer(ol.id())
-                        self.iface.layerTreeView().layerTreeModel().refreshLayerLegend(node)
+                        if not tab is True:
+                            props = ol.renderer().symbol().symbolLayer(0).properties()
+                            
+                            for key in l[3]:
+                                props[key] = l[3][key]
+                            
+                            #Set symbol type & properties depending on geometry
+                            geom_type = QgsWkbTypes.displayString(ol.wkbType())
+                            
+                            if geom_type == 'Polygon' or geom_type == 'MultiPolygon':
+                                ol.renderer().setSymbol(QgsFillSymbol.createSimple(props))
+                            elif geom_type == 'LineString' or geom_type == 'MultiLineString':
+                                ol.renderer().setSymbol(QgsLineSymbol.createSimple(props))
+                            elif geom_type == 'Point' or geom_type == 'MultiPoint':
+                                ol.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
+                            else:
+                                pass
+                            #redraw layer
+                            ol.triggerRepaint()
+                            #refresh legend
+                            node = QgsProject.instance().layerTreeRoot().findLayer(ol.id())
+                            self.iface.layerTreeView().layerTreeModel().refreshLayerLegend(node)
                         
                 else:
                     out_layers
@@ -331,7 +332,7 @@ class FeltTegn:
 class LoadDefs():
     def __init__(self,
                  codefile = None,
-                 fname = None
+                 fname = None,
                  museum_code = 'default'):
         
         self.codes = None
@@ -404,24 +405,28 @@ class LoadDefs():
         
         #TODO- set museum code from UI- or from import filemname???
         if museum_code == 'Auto':
-            museum_code = 
+            museum_code = fname[0:3].upper()
         
         if museum_code != 'default':
-            for code in d[museum_code]['codes']:
-                self.codes[code]=d[museum_code]['codes'][code]
-            for layer in d[museum_code]['layers']:
-                self.layers[layer]=d[museum_code]['layers'][layer]
-            
+            if museum_code in d.keys():
+                for code in d[museum_code]['codes']:
+                    self.codes[code]=d[museum_code]['codes'][code]
+                for layer in d[museum_code]['layers']:
+                    self.layers[layer]=d[museum_code]['layers'][layer]
+                
 class LoadData():
     """ Class to load data from a csv file"""
-    def __init__(self):
+    def __init__(self,
+                 museum_code='default',
+                 fname='None'):
         
         """List to contain data values"""
         self.data=[]
        
         
         """Load data definition from JSON file"""
-        defs = LoadDefs()
+        defs = LoadDefs(museum_code=museum_code,
+                        fname=fname)
         #codes deifning features and how they're handled
         self.codes = defs.codes
         # ditto layers
@@ -994,6 +999,7 @@ class Digi():
         
         # Set driver based on checkboxes in dialog passed from FeltTegn.run()
         # Shapefile
+
         if shp is True:
             dr_n = "ESRI Shapefile"
             dr_ext=".shp"
@@ -1003,6 +1009,7 @@ class Digi():
             '''Note- MITAB doesn't work as driver name, although according to
             docs it should. Works now with "Mapinfo File" for whatever reason. 
             I don't know either'''
+            print('TABTABTAB',tab)
             dr_n = "Mapinfo File"
             dr_ext=".tab"
         #Geopackage
