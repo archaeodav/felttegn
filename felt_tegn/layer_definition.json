@@ -168,13 +168,13 @@
                         "label"
                     ],
                     [
-                        "Note",
+                        "Kommentar",
                         "attr"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"note\", QVariant.String)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -276,13 +276,13 @@
                         "label"
                     ],
                     [
-                        "Note",
+                        "Kommentar",
                         "attr"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Note\", QVariant.String)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
