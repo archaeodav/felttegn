@@ -814,9 +814,8 @@ class Digi():
                                                   "Type":f["type"],
                                                   "FeatID":f['Fid'],
                                                  "Attr":attr}
-        print (self.layers.keys())
+
         for l in list(self.layers.keys()):
-            print(l)
             if 'features' in self.layers[l] and l != 'AllePunkter':
                 self.validator(l)
         
