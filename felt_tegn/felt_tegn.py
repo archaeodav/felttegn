@@ -813,9 +813,12 @@ class Digi():
                                                   "PtID":f['punkt_id'],
                                                   "Type":f["type"],
                                                   "FeatID":f['Fid'],
-                                                  "Attr":attr}
-        for l in self.layers:
-            self.validator(l)
+                                                 "Attr":attr}
+        print (self.layers.keys())
+        for l in list(self.layers.keys()):
+            print(l)
+            if 'features' in self.layers[l] and l != 'AllePunkter':
+                self.validator(l)
         
         # Modify features if true
         if mod_feats is True:
