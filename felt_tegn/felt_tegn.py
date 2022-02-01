@@ -783,7 +783,7 @@ class Digi():
                                                   "label":label,
                                                   'gf':geom_fejl}
                 
-                self.validator(l)
+                
                 
             # Output all points
             else:
@@ -814,9 +814,14 @@ class Digi():
                                                   "Type":f["type"],
                                                   "FeatID":f['Fid'],
                                                   "Attr":attr}
+        for l in self.layers:
+            self.validator(l)
+        
         # Modify features if true
         if mod_feats is True:
             self.mod_features()    
+            
+        
             
             
     def validator(self,
