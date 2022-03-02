@@ -311,29 +311,6 @@
      <string>Total stations opmåling</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>348</x>
-      <y>70</y>
-      <width>111</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="museum">
-    <property name="geometry">
-     <rect>
-      <x>295</x>
-      <y>74</y>
-      <width>47</width>
-      <height>13</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Museum</string>
-    </property>
-   </widget>
   </widget>
  </widget>
  <customwidgets>

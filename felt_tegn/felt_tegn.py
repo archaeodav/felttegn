@@ -233,13 +233,15 @@ class FeltTegn:
         self.dlg.hvonaar.setDateTime(QDateTime.currentDateTime())
         who = self.dlg.hvem
         
+        
+        # TODO: Fix the below
         mus_list = ['Auto',
                     'FHM',
                     'HOM',
                     'VKH']
         
-        mus = self.dlg.comboBox
-        mus.addItems(mus_list)
+        '''mus = self.dlg.comboBox
+        mus.addItems(mus_list)'''
         
         # show the dialog
         self.dlg.show()
@@ -260,7 +262,8 @@ class FeltTegn:
             when = self.dlg.hvonaar.date().toString('yyyy-M-dd')
             gps  = self.dlg.GPS_radioButton.isChecked()
             tps  = self.dlg.TPS_radioButton.isChecked()
-            mus_code = mus.currentText()
+            #mus_code = mus.currentText()
+            mus_code = 'Auto'
             
             # File creation options...
             #Add files to map
