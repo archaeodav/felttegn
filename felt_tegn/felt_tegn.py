@@ -577,7 +577,7 @@ class LoadData():
                 pass feature dicts'''
                 last_pt = False
                 
-                #is it the last pint in the file?
+                #is it the last point in the file?
                 if not i==l-1:
                      if self.data[i+1][4] != r[4]:
                         last_pt = True
@@ -727,9 +727,19 @@ class Digi():
             
             #list to contain points
             pts = []
+            
+            # list to contain heights
+            hts = []
+            
             # append points as QGIS geometries
             for pt in f["points"]:
                 pts.append(QgsPointXY(pt[0],pt[1])) 
+                hts.append(pt[2])
+                
+                
+            #calculate mean height
+            ht = sum(hts)/len(hts)
+                
             
             # Get feature type
             tp = f["code"]["type"]
