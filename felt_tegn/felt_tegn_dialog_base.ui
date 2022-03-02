@@ -6,358 +6,284 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>548</height>
+    <width>174</width>
+    <height>149</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>FeltTegn</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>490</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_4">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>0</y>
-     <width>211</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>16</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>FeltTegn</string>
-   </property>
-  </widget>
-  <widget class="QScrollArea" name="scrollArea">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>461</width>
-     <height>441</height>
-    </rect>
-   </property>
-   <property name="widgetResizable">
-    <bool>true</bool>
-   </property>
-   <widget class="QWidget" name="scrollAreaWidgetContents">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>459</width>
-      <height>439</height>
-     </rect>
-    </property>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>140</y>
-       <width>441</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Opmålings data</string>
-     </property>
-     <widget class="QDateEdit" name="hvonaar">
-      <property name="geometry">
-       <rect>
-        <x>310</x>
-        <y>20</y>
-        <width>110</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="displayFormat">
-       <string notr="true">yyyy-MM-dd</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="dato">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>20</y>
-        <width>47</width>
-        <height>14</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Dato</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="hvemlabel">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>81</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Opmålt af</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="hvem">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>20</y>
-        <width>113</width>
-        <height>20</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="GPS_radioButton">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>60</y>
-        <width>271</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>GNSS / GPS opmåling</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="TPS_radioButton">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>151</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Total stations opmåling</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="comboBox">
-      <property name="geometry">
-       <rect>
-        <x>310</x>
-        <y>70</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="museum">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>70</y>
-        <width>47</width>
-        <height>13</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Museum</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>270</y>
-       <width>211</width>
-       <height>231</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Indstillinger</string>
-     </property>
-     <widget class="QCheckBox" name="chk_kote">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>180</y>
-        <width>371</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Opret kotefil med alle punkter?</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_gp">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>80</y>
-        <width>271</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Eksportér til GeoPackage</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="chk_addfiles">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>140</y>
-        <width>371</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Tilføj til nuværende projekt?</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_shp">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>231</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Eksportér til ESRI .shp</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_tab">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>50</y>
-        <width>251</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Eksportér til MapInfo .tab</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_gjson">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>110</y>
-        <width>251</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Eksportér til GeoJSON</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>90</y>
-       <width>161</width>
-       <height>21</height>
-      </rect>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="text">
-      <string>Destinationsmappe</string>
+      <string>FeltTegn</string>
      </property>
     </widget>
-    <widget class="QgsFileWidget" name="inputTextFile">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>10</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="maximumSize">
+      <size>
+       <width>156</width>
+       <height>71</height>
+      </size>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>154</width>
+        <height>69</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>154</width>
+        <height>69</height>
+       </size>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>10</y>
+         <width>172</width>
+         <height>290</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QgsFileWidget" name="inputTextFile"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Input-fil</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsProjectionSelectionWidget" name="mQgsProjectionSelectionWidget"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Koordinatsystem</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Destinationsmappe</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsFileWidget" name="outputTargetDir"/>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Opmålings data</string>
+          </property>
+          <widget class="QDateEdit" name="hvonaar">
+           <property name="geometry">
+            <rect>
+             <x>310</x>
+             <y>20</y>
+             <width>110</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="dato">
+           <property name="geometry">
+            <rect>
+             <x>260</x>
+             <y>20</y>
+             <width>47</width>
+             <height>14</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Dato</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="hvemlabel">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>20</y>
+             <width>81</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Opmålt af</string>
+           </property>
+          </widget>
+          <widget class="QLineEdit" name="hvem">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>20</y>
+             <width>113</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="GPS_radioButton">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>60</y>
+             <width>271</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>GNSS / GPS opmåling</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="TPS_radioButton">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>151</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Total stations opmåling</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="comboBox">
+           <property name="geometry">
+            <rect>
+             <x>310</x>
+             <y>70</y>
+             <width>111</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="museum">
+           <property name="geometry">
+            <rect>
+             <x>260</x>
+             <y>70</y>
+             <width>47</width>
+             <height>13</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Museum</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_shp">
+          <property name="text">
+           <string>Eksportér til ESRI .shp</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_tab">
+          <property name="text">
+           <string>Eksportér til MapInfo .tab</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_gp">
+          <property name="text">
+           <string>Eksportér til GeoPackage</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_gjson">
+          <property name="text">
+           <string>Eksportér til GeoJSON</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="chk_addfiles">
+          <property name="text">
+           <string>Tilføj til nuværende projekt?</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="chk_kote">
+          <property name="text">
+           <string>Opret kotefil med alle punkter?</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="button_box">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
-    <widget class="QgsProjectionSelectionWidget" name="mQgsProjectionSelectionWidget">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>50</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QgsFileWidget" name="outputTargetDir">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>90</y>
-       <width>271</width>
-       <height>20</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>151</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Input-fil</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>161</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Koordinatsystem</string>
-     </property>
-    </widget>
-   </widget>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
