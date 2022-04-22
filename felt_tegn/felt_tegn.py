@@ -579,7 +579,7 @@ class LoadData():
                 
                 #is it the last point in the file?
                 if not i==l-1:
-                     if self.data[i+1][4] != r[4]:
+                     if self.data[i+1][4] != r[4] or self.layers[layer]['type'] == 'point':
                         last_pt = True
                 else:
                     last_pt = True
@@ -617,7 +617,7 @@ class LoadData():
                         # if this is a second pass feature create it
                         # check first to see if it has a unique id- stones etc don't
                         if not fid in self.feats_2nd_pass.keys():
-                            
+                        
                             self.feats_2nd_pass[fid] = {}
                             self.feats_2nd_pass[fid]["points"]=current
                             self.feats_2nd_pass[fid]["label"]=label
@@ -794,7 +794,8 @@ class Digi():
                 self.layers[l]['features'][feat]={"geom":geom,
                                                   "attr":attr,
                                                   "label":label,
-                                                  'gf':geom_fejl}
+                                                  'gf':geom_fejl,
+                                                  'hts':hts}
                 
                 
                 
@@ -1073,6 +1074,7 @@ class Digi():
                 elif self.layers[l]['type']=='pline':
                     gt=QgsWkbTypes.LineString
                     gt = "LineString"
+                    
                 elif self.layers[l]['type']== 'poly' or self.layers[l]['type']=='zpoly':
                     gt=QgsWkbTypes.Polygon
                     gt = "Polygon"
