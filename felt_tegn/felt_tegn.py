@@ -738,7 +738,7 @@ class Digi():
                 
                 
             #calculate mean height
-            ht = sum(hts)/len(hts)
+            hts = sum(hts)/len(hts)
                 
             
             # Get feature type
@@ -838,8 +838,6 @@ class Digi():
             self.mod_features()    
             
         
-            
-            
     def validator(self,
                   layer):
         '''Method intended to validate features and return a layer containing
@@ -918,6 +916,7 @@ class Digi():
                                 self.layers[lname]['features'][f]['geom']=self.layers[layer]['features'][f]['geom']
                                 self.layers[lname]['features'][f]['attr']=self.layers[layer]['features'][f]['attr']
                                 self.layers[lname]['features'][f]['label']=self.layers[layer]['features'][f]['label']
+                                self.layers[lname]['features'][f]['hts']=self.layers[layer]['features'][f]['hts']
 
                             self.layers[lname]['features'][f]["Duplicate_Nr"] = 'Y'
                             
@@ -935,6 +934,7 @@ class Digi():
                             self.layers[lname]['features'][f]['geom']=self.layers[layer]['features'][f]['geom']
                             self.layers[lname]['features'][f]['attr']=self.layers[layer]['features'][f]['attr']
                             self.layers[lname]['features'][f]['label']=self.layers[layer]['features'][f]['label']
+                            self.layers[lname]['features'][f]['hts']=self.layers[layer]['features'][f]['hts']
                         
                         self.layers[lname]['features'][f]['No_ID']='Y'
                         
@@ -951,6 +951,7 @@ class Digi():
                             self.layers[lname]['features'][f]['geom']=self.layers[layer]['features'][f]['geom']
                             self.layers[lname]['features'][f]['attr']=self.layers[layer]['features'][f]['attr']
                             self.layers[lname]['features'][f]['label']=self.layers[layer]['features'][f]['label']
+                            self.layers[lname]['features'][f]['hts']=self.layers[layer]['features'][f]['hts']
     
                         e = []
                         for g in geometry_errors[f]:
@@ -1047,7 +1048,9 @@ class Digi():
         
         # Loop through layers
         for l in self.layers:
+            print (l)
             if 'features' in self.layers[l].keys():
+                print (self.layers[l]['field_mapping'])
                 # Set filename
                 name = "%s_%s" %(self.fname,l)
                 #Set full output path
@@ -1091,6 +1094,7 @@ class Digi():
                 
                 # Add features to memory layer
                 for feat in self.layers[l]['features'].keys():
+                    #print (self.layers[l]['features'][feat])
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l]['features'][feat]["geom"])
                     fet.setFields(fields)

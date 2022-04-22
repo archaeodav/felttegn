@@ -5,7 +5,7 @@
                 "Aliases": [
                     "A"
                 ],
-                "layer": "Anl\u00e6g",
+                "layer": "Anlæg",
                 "pass": 2,
                 "type": "poly"
             },
@@ -45,7 +45,7 @@
             },
             "-FYLDSKIFTE": {
                 "Aliases": null,
-                "layer": "Anl\u00e6g",
+                "layer": "Anlæg",
                 "pass": 1,
                 "type": "poly"
             },
@@ -65,7 +65,7 @@
                 "Aliases": [
                     "M"
                 ],
-                "layer": "M\u00e5lepunkter",
+                "layer": "Målepunkter",
                 "pass": 2,
                 "type": "point"
             },
@@ -85,7 +85,7 @@
                 "Aliases": [
                     "P"
                 ],
-                "layer": "Pr\u00f8ver",
+                "layer": "Prøver",
                 "pass": 2,
                 "type": "point"
             },
@@ -119,13 +119,13 @@
                 "Aliases": [
                     "-ZZANLAEG"
                 ],
-                "layer": "Anl\u00e6g",
+                "layer": "Anlæg",
                 "pass": 1,
                 "type": "zpoly"
             }
         },
         "layers": {
-            "Anl\u00e6g": {
+            "Anlæg": {
                 "field_mapping": [
                     [
                         "Angivelse",
@@ -134,16 +134,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "A",
                 "type": "poly"
@@ -157,16 +152,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
@@ -180,16 +170,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -203,16 +188,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "X",
                 "type": "point"
@@ -226,16 +206,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
@@ -249,21 +224,16 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
             },
-            "M\u00e5lepunkter": {
+            "Målepunkter": {
                 "field_mapping": [
                     [
                         "Angivelse",
@@ -272,16 +242,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
@@ -295,16 +260,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "pline"
@@ -318,21 +278,16 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
             },
-            "Pr\u00f8ver": {
+            "Prøver": {
                 "field_mapping": [
                     [
                         "Angivelse",
@@ -341,16 +296,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "P",
                 "type": "point"
@@ -364,16 +314,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "pline"
@@ -387,16 +332,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -410,16 +350,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -433,16 +368,11 @@
                     [
                         "Kommentar",
                         "attr"
-                    ],
-                    [
-                        "Niveau",
-                        "hts"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
-                    "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Kommentar\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -473,7 +403,7 @@
                         "vertical_anchor_point": "1"
                     }
                 },
-                "Anl\u00e6g": {
+                "Anlæg": {
                     "do": 1,
                     "style": {
                         "border_width_map_unit_scale": "3x:0,0,0,0,0,0",
@@ -601,7 +531,7 @@
                         "style": "solid"
                     }
                 },
-                "M\u00e5lepunkter": {
+                "Målepunkter": {
                     "do": 3,
                     "style": {
                         "angle": "0",
@@ -663,7 +593,7 @@
                         "style": "solid"
                     }
                 },
-                "Pr\u00f8ver": {
+                "Prøver": {
                     "do": 3,
                     "style": {
                         "angle": "0",
