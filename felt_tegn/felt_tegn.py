@@ -1137,7 +1137,10 @@ class Digi():
                     xmin = ext.xMinimum()
                     ymin = ext.yMinimum()
                     
-                    save_options.layerOptions = ['BOUNDS=%s,%s,%s,%s' %(xmin,ymin,xmax,ymax)]
+                    #save_options.fileEncoding = "ISO-8859-1"
+                    
+                    save_options.layerOptions = ['BOUNDS=%s,%s,%s,%s' %(xmin,ymin,xmax,ymax),
+                                                 'ENCODING=ISO-8859-1']
                 
                 # Get Qgis Version
                 q_version =int(Qgis.QGIS_VERSION.split('.')[1])
