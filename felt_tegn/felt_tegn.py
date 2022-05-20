@@ -233,15 +233,49 @@ class FeltTegn:
         self.dlg.hvonaar.setDateTime(QDateTime.currentDateTime())
         who = self.dlg.hvem
         
+        sag = self.dlg.SagsNummer
+        
+        kd = self.dlg.kDato
+        
         
         # TODO: Fix the below
         mus_list = ['Auto',
-                    'FHM',
+                    'ARV',
+                    'BMR',
+                    'DKM',
                     'HOM',
-                    'VKH']
+                    'TAK',
+                    'KBM',
+                    'FHM',
+                    'MKH',
+                    'HBV',
+                    'MLF',
+                    'HEM',
+                    'MNS',
+                    'MSA',
+                    'SBM',
+                    'KNV',
+                    'MSJ',
+                    'THY',
+                    'MVE',
+                    'MOE',
+                    'NATMUS',
+                    'NJM',
+                    'NJK',
+                    'OBM',
+                    'ROM',
+                    'SKH',
+                    'SJM',
+                    'VKH',
+                    'VHM',
+                    'VMÅ',
+                    'VSM',
+                    'VIR',
+                    'ØHM',
+                    'ØFM']
         
-        '''mus = self.dlg.comboBox
-        mus.addItems(mus_list)'''
+        mus = self.dlg.MusComboBox
+        mus.addItems(mus_list)
         
         # show the dialog
         self.dlg.show()
@@ -262,8 +296,10 @@ class FeltTegn:
             when = self.dlg.hvonaar.date().toString('yyyy-M-dd')
             gps  = self.dlg.GPS_radioButton.isChecked()
             tps  = self.dlg.TPS_radioButton.isChecked()
-            #mus_code = mus.currentText()
-            mus_code = 'Auto'
+            sag = sag.text()
+            kdato = kd.text()
+            
+            mus_code = mus.currentText()
             
             # File creation options...
             #Add files to map
@@ -277,7 +313,11 @@ class FeltTegn:
             
             for i in ifile:
                 # Instantiate Digi class
-                digit = Digi([i],kote_file=kote_file,mus_code=mus_code)
+                digit = Digi([i],
+                             kote_file=kote_file,
+                             mus_code=mus_code,
+                             sag=sag,
+                             kdato=kdato)
                 
                 # Export the features
                 out_layers = digit.feat_export(odir.filePath(),
@@ -409,6 +449,10 @@ class LoadDefs():
         #TODO- set museum code from UI- or from import filemname???
         if museum_code == 'Auto':
             museum_code = fname[0:3].upper()
+            
+            
+            
+            
         
         if museum_code != 'default':
             if museum_code in d.keys():
@@ -416,6 +460,8 @@ class LoadDefs():
                     self.codes[code]=d[museum_code]['codes'][code]
                 for layer in d[museum_code]['layers']:
                     self.layers[layer]=d[museum_code]['layers'][layer]
+                for style in d[museum_code]['layers']:
+                    self.layers[layer]=d[museum_code]['styles'][style]
                 
 class LoadData():
     """ Class to load data from a csv file"""
@@ -673,7 +719,9 @@ class Digi():
                  mus_code = 'default',
                  split_files=True, #convert as seperate files or homogenise
                  case_delimiter = '_', # delimiter used in case- eg FHM12345_blah.csv
-                 kote_file = False):
+                 kote_file = False,
+                 sag=None,
+                 kdato=kdato):
         
         # The layers we'll actually use
         self.layers = None
@@ -686,12 +734,37 @@ class Digi():
         #Errors
         self.errors=[]
         
+        
+        
         ''' This if statment is kind of redundant, but left as a hook because 
         eventually we may add the option to merge seperate files'''
         if split_files is True:
             # Loop through and load files
             for f in infiles:
-                indata = LoadData(museum_code=mus_code, fname=os.path.split(f)[-1])
+                fname=os.path.split(f)[-1] 
+                
+                if mus_code == 'Auto':
+                    mus_code = fname[0:3].upper()
+                    
+                if sag == 'Auto':
+                    delims = ['_',' ','-']
+                    first_delim = None
+                    
+                    for d in delims:
+                        idx = sag.find(d)
+                        
+                        if not idx == -1:
+                            if first_delim is None:
+                                first_delim = idx
+                            elif idx < first_delim:
+                                first_delim = idx
+                                
+                    if first_delim is None:
+                        first_delim = -1
+                               
+                    sag = sag[3:first_delim]        
+                        
+                indata = LoadData(museum_code=mus_code, fname=fname)
                 indata.parsefile(f, kote_file=kote_file)
                 self.layers = indata.layers
                 

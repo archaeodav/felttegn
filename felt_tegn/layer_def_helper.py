@@ -1,4 +1,4 @@
-    #!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Mon May  9 14:12:29 2022
@@ -10,12 +10,16 @@ Created on Mon May  9 14:12:29 2022
 import os
 import json
 
+
+
+file = os.path.dirname(__file__)
+
 class LayerDef():
     def __init__(self,
                  infile=None):
         
         if infile is None:
-            infile = os.path.join(os.path.dirname(__file__),'layer_definition.json')
+            infile = os.path.join(file,'layer_definition.json')
             
         self.infile = infile
             
@@ -59,18 +63,21 @@ class LayerDef():
         if target_layer is None and all_layers is False:
             raise Exception("No target layer")
             
+        if not field_defn.split('"')[1] == alias_tuple[0]:
+            raise Exception("Field name doesn't match alias")
+        
+            
         targets = []
         
         if target_layer is not None:
             targets.append(target_layer)
             
         else:
-            targets = self.defs[target_museum]['layers']
+            targets = self.defs[target_museum]['layers'].keys()
         
         for t in targets:
-            self.defs[target_museum][t]
-            
+            self.defs[target_museum]['layers'][t]["fields"].append(field_defn)
+            self.defs[target_museum]['layers'][t]["field_mapping"].append(alias_tuple)
         
-        
-            
+                    
     

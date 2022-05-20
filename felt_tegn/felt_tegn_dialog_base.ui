@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>603</width>
-    <height>665</height>
+    <width>604</width>
+    <height>808</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>610</y>
+     <y>760</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -102,7 +102,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>330</y>
+     <y>480</y>
      <width>481</width>
      <height>231</height>
     </rect>
@@ -225,8 +225,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>150</y>
-     <width>471</width>
+     <y>330</y>
+     <width>481</width>
      <height>121</height>
     </rect>
    </property>
@@ -309,6 +309,107 @@
     </property>
     <property name="text">
      <string>Total stations opmåling</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>190</y>
+     <width>481</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Museum og sag</string>
+   </property>
+   <widget class="QComboBox" name="MusComboBox">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>30</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="editable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Museums kode</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="SagsNummer">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>30</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Auto</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>30</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sagsnummer</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>90</y>
+      <width>181</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Kampangedato</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>471</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Obs! Hvis museums kode og sagsnummer er indstillet til auto, tager programmet dem fra filnavnet </string>
     </property>
    </widget>
   </widget>
