@@ -721,7 +721,12 @@ class Digi():
                  case_delimiter = '_', # delimiter used in case- eg FHM12345_blah.csv
                  kote_file = False,
                  sag=None,
-                 kdato=kdato):
+                 kdato=None,
+                 who=None,
+                 when=None,
+                 gps=None,
+                 tps=None,
+                 ):
         
         # The layers we'll actually use
         self.layers = None
@@ -734,6 +739,22 @@ class Digi():
         #Errors
         self.errors=[]
         
+        #Properites for all layers and features
+        
+        
+        
+        if gps is True:
+            method = 'GPS'
+        else:
+            method = 'TPS'
+        
+        self.props={'Opmåler':who,
+                    'Dato':when,
+                    'Metode':method,
+                    'Kampagne':kdato,
+                    'Journal':mus_code+sag,
+                    }
+        
         
         
         ''' This if statment is kind of redundant, but left as a hook because 
@@ -745,6 +766,8 @@ class Digi():
                 
                 if mus_code == 'Auto':
                     mus_code = fname[0:3].upper()
+                    
+                    self.props['Museum']=mus_code
                     
                 if sag == 'Auto':
                     delims = ['_',' ','-']
@@ -762,7 +785,9 @@ class Digi():
                     if first_delim is None:
                         first_delim = -1
                                
-                    sag = sag[3:first_delim]        
+                    sag = sag[3:first_delim]      
+                    
+                    self.props['Journal':mus_code+sag]
                         
                 indata = LoadData(museum_code=mus_code, fname=fname)
                 indata.parsefile(f, kote_file=kote_file)
@@ -1137,7 +1162,8 @@ class Digi():
                             fields.append(field)
                         else:
                             fields.append(eval(field))
-                            
+                
+                #TODO- populate from self.props instead
                 fields.append(QgsField(who_field, QVariant.String))
                 fields.append(QgsField(when_field, QVariant.String))
                 fields.append(QgsField(method_field, QVariant.String))
@@ -1176,7 +1202,9 @@ class Digi():
                         n = f.name()
                         for fm in self.layers[l]['field_mapping']:
                             if n == fm[0]:
-                                fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])
+                                fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])    
+                    
+                    # TODO- populate from self.props instead
                     fet.setAttribute(fields.indexOf(who_field),who)
                     fet.setAttribute(fields.indexOf(when_field),when)
                     

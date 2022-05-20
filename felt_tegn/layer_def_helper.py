@@ -78,6 +78,20 @@ class LayerDef():
         for t in targets:
             self.defs[target_museum]['layers'][t]["fields"].append(field_defn)
             self.defs[target_museum]['layers'][t]["field_mapping"].append(alias_tuple)
+            
+            
+    def add_properties(self,
+                       prop,
+                       alias_tuple,
+                       field,
+                       target_museum='default'):
+        
+        if not 'properties' in self.defs[target_museum]:
+            self.defs[target_museum]['properties']={}
+            
+        self.defs[target_museum]['properties'][prop]
+        
+        pass
         
                     
     
