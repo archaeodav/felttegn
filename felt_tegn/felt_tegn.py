@@ -301,6 +301,8 @@ class FeltTegn:
             
             mus_code = mus.currentText()
             
+            mus.clear()
+            
             # File creation options...
             #Add files to map
             add_files = self.dlg.chk_addfiles.isChecked() 
