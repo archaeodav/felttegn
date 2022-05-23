@@ -317,15 +317,15 @@ class FeltTegn:
                              kote_file=kote_file,
                              mus_code=mus_code,
                              sag=sag,
-                             kdato=kdato)
+                             kdato=kdato,
+                             who=whom,
+                             when=when,
+                             gps=gps,
+                             tps=tps)
                 
                 # Export the features
                 out_layers = digit.feat_export(odir.filePath(),
                                                proj.crs(),
-                                               whom,
-                                               when,
-                                               gps,
-                                               tps,
                                                shp=shp,
                                                tab=tab,
                                                gp=gp,
@@ -774,7 +774,7 @@ class Digi():
                     first_delim = None
                     
                     for d in delims:
-                        idx = sag.find(d)
+                        idx = fname.find(d)
                         
                         if not idx == -1:
                             if first_delim is None:
@@ -785,9 +785,9 @@ class Digi():
                     if first_delim is None:
                         first_delim = -1
                                
-                    sag = sag[3:first_delim]      
+                    sag = fname[3:first_delim]      
                     
-                    self.props['Journal':mus_code+sag]
+                self.props['Journal']=mus_code+sag
                         
                 indata = LoadData(museum_code=mus_code, fname=fname)
                 indata.parsefile(f, kote_file=kote_file)
@@ -1095,18 +1095,11 @@ class Digi():
                                            
     def feat_export(self, 
                     odir, 
-                    srs, 
-                    who,
-                    when,
-                    gps,
-                    tps,
+                    srs,
                     shp=True,
                     tab=False,
                     gp=False,
-                    gjson=False,
-                    who_field = 'Opmåler',
-                    when_field = 'Dato',
-                    method_field = 'Metode'):
+                    gjson=False):
         ''' Method to export features to different file formats'''
         
         # Driver name        
@@ -1162,12 +1155,7 @@ class Digi():
                             fields.append(field)
                         else:
                             fields.append(eval(field))
-                
-                #TODO- populate from self.props instead
-                fields.append(QgsField(who_field, QVariant.String))
-                fields.append(QgsField(when_field, QVariant.String))
-                fields.append(QgsField(method_field, QVariant.String))
-                
+               
                 # Set geometry type
                 if self.layers[l]['type']=='point':
                     gt=QgsWkbTypes.Point
@@ -1193,7 +1181,7 @@ class Digi():
                 
                 # Add features to memory layer
                 for feat in self.layers[l]['features'].keys():
-                    #print (self.layers[l]['features'][feat])
+                    self.layers[l]['features'][feat].update(self.props)
                     fet = QgsFeature()
                     fet.setGeometry(self.layers[l]['features'][feat]["geom"])
                     fet.setFields(fields)
@@ -1204,14 +1192,6 @@ class Digi():
                             if n == fm[0]:
                                 fet.setAttribute(fields.indexOf(n),self.layers[l]['features'][feat][fm[1]])    
                     
-                    # TODO- populate from self.props instead
-                    fet.setAttribute(fields.indexOf(who_field),who)
-                    fet.setAttribute(fields.indexOf(when_field),when)
-                    
-                    if gps is True:
-                        fet.setAttribute(fields.indexOf(method_field),'GPS')
-                    else:
-                        fet.setAttribute(fields.indexOf(method_field),'TPS')
 
                     pr.addFeatures([fet])
                     tmp_layer.updateExtents()

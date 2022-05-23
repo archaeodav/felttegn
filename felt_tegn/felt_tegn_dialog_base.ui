@@ -376,7 +376,7 @@
      <string>Sagsnummer</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="kDato">
     <property name="geometry">
      <rect>
       <x>100</x>

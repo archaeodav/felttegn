@@ -138,12 +138,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double)"
+                    "QgsField(\"Niveau\", QVariant.Double)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "A",
                 "type": "poly"
@@ -161,12 +186,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double)"
+                    "QgsField(\"Niveau\", QVariant.Double)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
@@ -184,12 +234,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -207,12 +282,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "X",
                 "type": "point"
@@ -230,12 +330,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
@@ -253,12 +378,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -276,12 +426,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "point"
@@ -299,12 +474,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "pline"
@@ -322,12 +522,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -345,12 +570,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "P",
                 "type": "point"
@@ -368,12 +618,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "pline"
@@ -391,12 +666,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -414,12 +714,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"
@@ -437,12 +762,37 @@
                     [
                         "Niveau",
                         "hts"
+                    ],
+                    [
+                        "Journal",
+                        "Journal"
+                    ],
+                    [
+                        "Kampagne",
+                        "Kampagne"
+                    ],
+                    [
+                        "Metode",
+                        "Metode"
+                    ],
+                    [
+                        "Dato",
+                        "Dato"
+                    ],
+                    [
+                        "Opm\u00e5ler",
+                        "Opm\u00e5ler"
                     ]
                 ],
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)"
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
+                    "QgsField(\"Journal\", QVariant.String)",
+                    "QgsField(\"Kampagne\", QVariant.String)",
+                    "QgsField(\"Metode\", QVariant.String)",
+                    "QgsField(\"Dato\", QVariant.String)",
+                    "QgsField(\"Opm\u00e5ler\", QVariant.String)"
                 ],
                 "prefix": "",
                 "type": "poly"

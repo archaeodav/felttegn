@@ -46,7 +46,7 @@ class LayerDef():
                       ofile,
                       sort_keys=True,
                       indent=4,
-                      ensure_ascii=False)
+                      ensure_ascii=True)
             
             ofile.close()
             
