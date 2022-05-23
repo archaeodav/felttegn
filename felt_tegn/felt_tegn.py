@@ -1375,4 +1375,9 @@ class Artist():
         return draw_list
             
         
+class MetaDataFile():
+    def __init__(self):
+        pass
+
+
             
