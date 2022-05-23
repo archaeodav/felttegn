@@ -1062,7 +1062,6 @@ class Digi():
                             self.layers[lname]['features'][f]['Duplicate_Nr']=''
                         if not 'No_ID' in self.layers[lname]['features'][f].keys():    
                             self.layers[lname]['features'][f]['No_ID']=''
-                        
             
     def mod_features(self):
         # Method for modifiying features based on intersecting geometries
