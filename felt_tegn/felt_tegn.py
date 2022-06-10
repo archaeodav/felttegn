@@ -911,7 +911,7 @@ class Digi():
                                                     QgsField("Attr", QVariant.String)]
                     
                     self.layers[l]["field_mapping"]=[['X','X'],
-                                                     ['Y','X'],
+                                                     ['Y','Y'],
                                                      ['Z','Z'],
                                                      ['PtID','PtID'],
                                                      ['Type','Type'],
