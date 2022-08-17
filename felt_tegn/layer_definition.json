@@ -163,7 +163,7 @@
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double)",
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
                     "QgsField(\"Journal\", QVariant.String)",
                     "QgsField(\"Kampagne\", QVariant.String)",
                     "QgsField(\"Metode\", QVariant.String)",
@@ -211,7 +211,7 @@
                 "fields": [
                     "QgsField(\"Angivelse\", QVariant.String)",
                     "QgsField(\"Kommentar\", QVariant.String)",
-                    "QgsField(\"Niveau\", QVariant.Double)",
+                    "QgsField(\"Niveau\", QVariant.Double, 'double', 10, 2)",
                     "QgsField(\"Journal\", QVariant.String)",
                     "QgsField(\"Kampagne\", QVariant.String)",
                     "QgsField(\"Metode\", QVariant.String)",
