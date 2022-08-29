@@ -769,7 +769,8 @@ class Digi():
                 if mus_code == 'Auto':
                     mus_code = fname[0:3].upper()
                     
-                    self.props['Museum']=mus_code
+                self.props['Museum']=mus_code
+                    
                     
                 if sag == 'Auto':
                     delims = ['_',' ','-']
@@ -900,8 +901,12 @@ class Digi():
                 
                 
             # Output all points
+            
+            #TODO set this so that AllePunkter is controlled by layer def.json
+            #instead of this idiocy
+            
             else:
-                if not 'fields' in self.layers[l]:
+                '''if not 'fields' in self.layers[l]:
                     self.layers[l]["fields"]=[QgsField("X", QVariant.Double),
                                                     QgsField("Y", QVariant.Double),
                                                     QgsField("Z", QVariant.Double),
@@ -919,6 +924,7 @@ class Digi():
                                                      ['Attr','Attr']]
                     
                     self.layers[l]['prefix']=''
+                    '''
                     
                 self.layers[l]['features'][feat]={"geom":geom,
                                                   "X":f['x'],
