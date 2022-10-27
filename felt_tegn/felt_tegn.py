@@ -24,13 +24,13 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QDateTime
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.gui import QgsFileWidget, QgsProjectionSelectionWidget
 
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
-from .felt_tegn_dialog import FeltTegnDialog
+from .felt_tegn_dockwidget import FeltTegnDock
 import os.path
 
 import os
@@ -189,56 +189,28 @@ class FeltTegn:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
+        self.dlg = FeltTegnDock()
+        self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dlg)
+        self.dlg.show()
 
         icon_path = ':/plugins/felt_tegn/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Digitalisér GPS-punkter'),
-            callback=self.run,
+            text=self.tr(u'Åbn felttegn'),
+            callback=self.initGui,
             parent=self.iface.mainWindow())
 
-        # will be set False in run()
-        self.first_start = True
-
-
-    def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
-        for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&FeltTegn'),
-                action)
-            self.iface.removeToolBarIcon(action)
-
-
-    def run(self):
-        """Run method that performs all the real work"""
-
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg = FeltTegnDialog()
-
-        # Input file dialog
+        # Define and setup GUI
         ifile = self.dlg.inputTextFile
         # Enable multiple file ingest
         ifile.setStorageMode(QgsFileWidget.GetMultipleFiles)
         #Set up output directory dialog
         odir = self.dlg.outputTargetDir
         odir.setStorageMode(QgsFileWidget.GetDirectory)
+        self.dlg.hvonaar.setDateTime(QDateTime.currentDateTime())
         #Projection dialog
         proj = self.dlg.mQgsProjectionSelectionWidget
         proj.setCrs(QgsCoordinateReferenceSystem("EPSG:25832"))
-        
-        self.dlg.hvonaar.setDateTime(QDateTime.currentDateTime())
-        who = self.dlg.hvem
-        
-        sag = self.dlg.SagsNummer
-        
-        kd = self.dlg.kDato
-        
-        
-        # TODO: Fix the below
         mus_list = ['Auto',
                     'ARV',
                     'BMR',
@@ -276,15 +248,60 @@ class FeltTegn:
         
         mus = self.dlg.MusComboBox
         mus.addItems(mus_list)
+
+        importKnap = self.dlg.importButton
+        importKnap.clicked.connect(self.run)
+
+        vejledningKnap = self.dlg.pushButton_3
+        vejledningKnap.clicked.connect(self.visVejledning)
         
-        # show the dialog
-        self.dlg.show()
+
+        # will be set False in run()
+        self.first_start = True
+
+
+    def unload(self):
+        """Removes the plugin menu item and icon from QGIS GUI."""
+        for action in self.actions:
+            self.iface.removePluginMenu(
+                self.tr(u'&FeltTegn'),
+                action)
+            self.iface.removeToolBarIcon(action)
+
+    def log(self, tekst):
+        # Log output to textbox
+        self.dlg.plainTextEdit.insertPlainText(tekst + '\n')
+
+    def visVejledning(self):
+        self.dlg.tabWidget.setCurrentIndex(2)
+
+
+    def run(self):
+        """Run method that performs all the real work"""
+
+        # Input file dialog
+        ifile = self.dlg.inputTextFile
+        #Set up output directory dialog
+        odir = self.dlg.outputTargetDir
+        #Projection dialog
+        proj = self.dlg.mQgsProjectionSelectionWidget
+        
+        who = self.dlg.hvem
+        
+        sag = self.dlg.SagsNummer
+        
+        kd = self.dlg.kDato
+
+        mus = self.dlg.MusComboBox
         
         # Run the dialog event loop
-        result = self.dlg.exec_()
+        #result = self.dlg.exec_()
+        result = True
+
+        # Clear log
+        self.dlg.plainTextEdit.setPlainText("")
+        self.log("Running import...")
         
-        
-       
         # See if OK was pressed
         if result:
             # Export file format radio butoons
@@ -300,7 +317,6 @@ class FeltTegn:
             kdato = kd.text()
             
             mus_code = mus.currentText()
-            
             mus.clear()
             
             # File creation options...
@@ -312,8 +328,8 @@ class FeltTegn:
 
             # Input files
             ifile = ifile.splitFilePaths(ifile.filePath())
-            
             for i in ifile:
+
                 # Instantiate Digi class
                 digit = Digi([i],
                              kote_file=kote_file,
