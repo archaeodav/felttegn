@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>457</width>
-    <height>815</height>
+    <height>661</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -71,7 +71,7 @@
                   <x>0</x>
                   <y>0</y>
                   <width>445</width>
-                  <height>774</height>
+                  <height>620</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,7 +99,7 @@
                     <string notr="true"/>
                    </property>
                    <property name="title">
-                    <string>Data fra GPS: </string>
+                    <string>Kildefil: </string>
                    </property>
                    <property name="flat">
                     <bool>false</bool>
@@ -128,7 +128,7 @@
                       <item row="0" column="0">
                        <widget class="QLabel" name="label">
                         <property name="text">
-                         <string>Input-fil (.txt eller .csv fra GPS):</string>
+                         <string>Tekstfil fra GPS (.txt eller .csv):</string>
                         </property>
                        </widget>
                       </item>
@@ -144,16 +144,6 @@
                       </item>
                       <item row="1" column="1">
                        <widget class="QgsProjectionSelectionWidget" name="mQgsProjectionSelectionWidget"/>
-                      </item>
-                      <item row="2" column="0">
-                       <widget class="QLabel" name="label_3">
-                        <property name="text">
-                         <string>Destinationsmappe:</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="2" column="1">
-                       <widget class="QgsFileWidget" name="outputTargetDir"/>
                       </item>
                      </layout>
                     </item>
@@ -216,6 +206,9 @@
                       <item row="1" column="1">
                        <widget class="QLineEdit" name="SagsNummer">
                         <property name="text">
+                         <string/>
+                        </property>
+                        <property name="placeholderText">
                          <string>Automatisk (fra filnavn)</string>
                         </property>
                        </widget>
@@ -228,7 +221,11 @@
                        </widget>
                       </item>
                       <item row="2" column="1">
-                       <widget class="QLineEdit" name="kDato"/>
+                       <widget class="QLineEdit" name="kDato">
+                        <property name="placeholderText">
+                         <string>Kampagnedato</string>
+                        </property>
+                       </widget>
                       </item>
                       <item row="3" column="1">
                        <widget class="QLabel" name="label_8">
@@ -257,7 +254,7 @@
                  <item>
                   <widget class="QGroupBox" name="groupBox_3">
                    <property name="title">
-                    <string>Oplysninger om indmåling: </string>
+                    <string>Oplysninger om indmåling:    </string>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_4">
                     <property name="leftMargin">
@@ -294,7 +291,11 @@
                        </widget>
                       </item>
                       <item row="0" column="1">
-                       <widget class="QLineEdit" name="hvem"/>
+                       <widget class="QLineEdit" name="hvem">
+                        <property name="placeholderText">
+                         <string>Opmålers navn</string>
+                        </property>
+                       </widget>
                       </item>
                       <item row="1" column="0">
                        <widget class="QLabel" name="dato">
@@ -335,7 +336,7 @@
                  <item>
                   <widget class="QGroupBox" name="groupBox_4">
                    <property name="title">
-                    <string>Indstillinger: </string>
+                    <string>Resultat: </string>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_5">
                     <property name="leftMargin">
@@ -365,38 +366,24 @@
                        <number>0</number>
                       </property>
                       <item row="0" column="0">
-                       <widget class="QRadioButton" name="radioButton_shp">
+                       <widget class="QLabel" name="label_3">
                         <property name="text">
-                         <string>Eksportér til ESRI .shp</string>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
-                        <property name="autoExclusive">
-                         <bool>true</bool>
+                         <string>Destinationsmappe:</string>
                         </property>
                        </widget>
                       </item>
                       <item row="0" column="1">
-                       <widget class="QRadioButton" name="radioButton_tab">
-                        <property name="text">
-                         <string>Eksportér til MapInfo .tab</string>
-                        </property>
-                       </widget>
+                       <widget class="QgsFileWidget" name="outputTargetDir"/>
                       </item>
                       <item row="1" column="0">
-                       <widget class="QRadioButton" name="radioButton_gp">
+                       <widget class="QLabel" name="label_4">
                         <property name="text">
-                         <string>Eksportér til GeoPackage</string>
+                         <string>Filtype: </string>
                         </property>
                        </widget>
                       </item>
                       <item row="1" column="1">
-                       <widget class="QRadioButton" name="radioButton_gjson">
-                        <property name="text">
-                         <string>Eksportér til GeoJSON</string>
-                        </property>
-                       </widget>
+                       <widget class="QComboBox" name="filetypeCombo"/>
                       </item>
                       <item row="2" column="0">
                        <widget class="QCheckBox" name="chk_addfiles">
@@ -476,10 +463,26 @@
            <string>Import-log</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_8">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_7">
              <item row="0" column="0">
-              <widget class="QPlainTextEdit" name="plainTextEdit"/>
+              <widget class="QPlainTextEdit" name="plainTextEdit">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>

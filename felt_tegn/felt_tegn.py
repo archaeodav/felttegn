@@ -248,6 +248,12 @@ class FeltTegn:
         mus = self.dlg.MusComboBox
         mus.addItems(mus_list)
 
+        filetype = self.dlg.filetypeCombo
+        filetype.addItem("ESRI Shapefil (.shp)","shp")
+        filetype.addItem("MapInfo Tabel (.tab)","tab")
+        filetype.addItem("GeoPackage (.gpkg)","gp")
+        filetype.addItem("GeoJSON (.json)","gjson")
+
         importKnap = self.dlg.importButton
         importKnap.clicked.connect(self.run)
 
@@ -312,11 +318,14 @@ class FeltTegn:
         
         # See if OK was pressed
         if result:
-            # Export file format radio butoons
-            shp = self.dlg.radioButton_shp.isChecked()
-            tab = self.dlg.radioButton_tab.isChecked()
-            gp = self.dlg.radioButton_gp.isChecked()
-            gjson = self.dlg.radioButton_gjson.isChecked()
+            # Export file format combobox
+            filetype = self.dlg.filetypeCombo.currentData()
+            shp=tab=gp=gjson = False
+            if filetype == "shp": shp = True
+            elif filetype == "tab": tab = True
+            elif filetype == "gp": gp = True
+            elif filetype == "gjson": gjson = True
+            self.log("Filtype: " + filetype)
             whom = who.text()
             when = self.dlg.hvonaar.date().toString('yyyy-M-dd')
             gps  = self.dlg.GPS_radioButton.isChecked()
