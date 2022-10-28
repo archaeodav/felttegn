@@ -23,14 +23,14 @@
 """
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QDateTime
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.gui import QgsFileWidget, QgsProjectionSelectionWidget
 
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
-from .felt_tegn_dockwidget import FeltTegnDock
+from .felt_tegn_ui import FeltTegnUI
 import os.path
 
 import os
@@ -189,15 +189,14 @@ class FeltTegn:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        self.dlg = FeltTegnDock()
-        self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dlg)
-        self.dlg.show()
+        self.dlg = FeltTegnUI()
+        #self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dlg)
 
         icon_path = ':/plugins/felt_tegn/icon.png'
         self.add_action(
             icon_path,
             text=self.tr(u'Åbn felttegn'),
-            callback=self.initGui,
+            callback=self.open,
             parent=self.iface.mainWindow())
 
         # Define and setup GUI
@@ -252,12 +251,18 @@ class FeltTegn:
         importKnap = self.dlg.importButton
         importKnap.clicked.connect(self.run)
 
-        vejledningKnap = self.dlg.pushButton_3
-        vejledningKnap.clicked.connect(self.visVejledning)
+        lukKnap = self.dlg.pushButton_2
+        lukKnap.clicked.connect(self.close)
         
 
         # will be set False in run()
         self.first_start = True
+
+    def open(self):
+        self.dlg.show()
+
+    def close(self):
+        self.dlg.hide()
 
 
     def unload(self):
@@ -270,10 +275,7 @@ class FeltTegn:
 
     def log(self, tekst):
         # Log output to textbox
-        self.dlg.plainTextEdit.insertPlainText(tekst + '\n')
-
-    def visVejledning(self):
-        self.dlg.tabWidget.setCurrentIndex(2)
+        self.dlg.plainTextEdit.insertPlainText(str(tekst) + '\n')
 
 
     def run(self):
@@ -281,6 +283,10 @@ class FeltTegn:
 
         # Input file dialog
         ifile = self.dlg.inputTextFile
+        if len(ifile.splitFilePaths(ifile.filePath())) == 0:
+            QMessageBox.critical(self.dlg, "FeltTegn", "Vælg en eller flere målefiler før du fortsætter!")
+            return
+
         #Set up output directory dialog
         odir = self.dlg.outputTargetDir
         #Projection dialog
@@ -293,6 +299,8 @@ class FeltTegn:
         kd = self.dlg.kDato
 
         mus = self.dlg.MusComboBox
+
+        progress = self.dlg.progressBar
         
         # Run the dialog event loop
         #result = self.dlg.exec_()
@@ -328,8 +336,9 @@ class FeltTegn:
 
             # Input files
             ifile = ifile.splitFilePaths(ifile.filePath())
+            progress_counter = 0
+            # Iterate files
             for i in ifile:
-
                 # Instantiate Digi class
                 digit = Digi([i],
                              kote_file=kote_file,
@@ -348,7 +357,10 @@ class FeltTegn:
                                                tab=tab,
                                                gp=gp,
                                                gjson=gjson)
-                
+
+                self.log(len(out_layers))
+                progress.setMaximum(len(ifile) * len(out_layers))
+              
                 # Add files to Qgis layers
                 if add_files is True:
                     #Instatiate our artist class
@@ -356,6 +368,8 @@ class FeltTegn:
                     
                     #sort these and get symbology
                     for l in styled.order_layers(out_layers):
+                        progress_counter+=1
+                        progress.setValue(progress_counter)
                         #get layer name
                         ol = QgsVectorLayer(l[0],os.path.split(l[0])[-1].split('.')[0],"ogr")
                         
@@ -388,6 +402,10 @@ class FeltTegn:
                         
                 else:
                     out_layers
+        # Finished - give feedback and reset
+        QMessageBox.about(self.dlg, "FeltTegn", "Importen blev gennemført!")
+        progress.setValue(0)
+        ifile=""
                     
                     
 class LoadDefs():
